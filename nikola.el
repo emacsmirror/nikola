@@ -100,7 +100,7 @@ passed to the deploy string."
    ;; It enters when nikola-build returns an error
    ((string-match-p "This command needs to run inside an existing Nikola site"
 		    event)
-    (message "The directory org2nikola-output-root-directory doesn't exist or d\
+    (message "The directory nikola-output-root-directory doesn't exist or d\
 oesn't contain a Nikola site. Please, create it first.."))
    ;; It enters when nikola-stop-webserver
    ((and
@@ -148,7 +148,7 @@ oesn't contain a Nikola site. Please, create it first.."))
 (defun nikola-build ()
   "Build the site with nikola build."
   (interactive)
-  (set 'default-directory org2nikola-output-root-directory)
+  (set 'default-directory nikola-output-root-directory)
   (if (get-process "nikola-build")
       (if (y-or-n-p "There's a nikola-build process active. Do you want to rest\
 art it? ")
@@ -173,7 +173,7 @@ art it? ")
 (defun nikola-start-webserver ()
   "Start nikola's webserver with the auto-building option."
   (interactive)
-  (set 'default-directory org2nikola-output-root-directory)
+  (set 'default-directory nikola-output-root-directory)
   (if (eq nikola-webserver-auto t)
       (set 'webserver "auto")
     (set 'webserver "serve"))
@@ -208,7 +208,7 @@ nt to restart it?")
 (defun nikola-deploy ()
   "Deploys the site using the default script."
   (interactive)
-  (set 'default-directory org2nikola-output-root-directory)
+  (set 'default-directory nikola-output-root-directory)
   (if (get-process "nikola-deploy")
       (if (y-or-n-p "There's a nikola-deploy process active. Do you want to res\
 tart it? ")
@@ -243,7 +243,7 @@ tart it? ")
 
 (defun nikola-execute-script (path)
   "Execute script on PATH."
-  (set 'default-directory org2nikola-output-root-directory)
+  (set 'default-directory nikola-output-root-directory)
   (if (eq nikola-verbose t)
       (call-process-shell-command path nil "*Nikola*")
     (call-process-shell-command path nil nil)))
