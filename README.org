@@ -1,0 +1,53 @@
+#+startup:indent
+* nikola-mode
+** English
+*** About
+This is a simple wrapper around nikola. It permits to build, deploy and start the webserver.
+*** Features
+Hooks before and after building and deploying.
+*** Requirements
+#+BEGIN_SRC bash
+sudo pip3 install Nikola Nikola[extras]
+#+END_SRC
+*** Install
+#+BEGIN_SRC bash
+git clone https://daemons.cf/cgit/nikola-mode ~/.emacs.d/lisp/
+#+END_SRC
+*** Configuration
+The relevant variables are on the =:config= section.
+
+#+BEGIN_SRC emacs-lisp
+(use-package nikola
+  :load-path "~/.emacs.d/lisp/"
+  :config
+  (setq org2nikola-output-root-directory "~/Documents/blog/")
+  (setq nikola-verbose t)
+  (setq nikola-webserver-auto t)
+  (setq nikola-webserver-host "127.0.0.1")
+  (setq nikola-webserver-port "8000")
+  (setq nikola-deploy-input t)
+  (setq nikola-deploy-input-default "New article")
+  (setq nikola-build-before-hook-script nil)
+  (setq nikola-build-after-hook-script nil)
+  (setq nikola-deploy-before-hook-script nil)
+  (setq nikola-deploy-after-hook-script nil)
+  )
+#+END_SRC
+*** License
+#+BEGIN_SRC text
+Author:: drymer <drymer [ EN ] autistici.org>
+Copyright:: Copyright (c) 2016, drymer
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#+END_SRC
