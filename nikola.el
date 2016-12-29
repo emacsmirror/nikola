@@ -1,4 +1,4 @@
-;;; nikola.el --- Minor mode for managing a nikola site
+;;; nikola.el --- Simple wrapper for nikola
 ;; Author:: drymer <drymer [ EN ] autistici.org>
 ;; Copyright:: Copyright (c) 2016, drymer
 ;; This program is free software: you can redistribute it and/or modify
