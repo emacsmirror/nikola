@@ -162,7 +162,7 @@ oesn't contain a Nikola site. Please, create it first.."))
      (string-match-p "nikola-build" (format "%s" process)))
     (if (eq nikola-build-after-hook-script nil)
 	(run-hook-with-args 'nikola-build-after-hook "")
-      (nikola-execute-script nikola-build-after-hook-script))
+      (nikola-execute nikola-build-after-hook-script))
     (message "Site built correctly."))
    ;; It enters when nikola-start-webserver's directory is not correct
    ((and
@@ -179,7 +179,7 @@ oesn't contain a Nikola site. Please, create it first.."))
      (string-match-p "nikola-deploy" (format "%s" process)))
     (if (eq nikola-deploy-after-hook-script nil)
 	(run-hook-with-args 'nikola-deploy-after-hook "")
-      (nikola-execute-script nikola-deploy-after-hook-script))
+      (nikola-execute nikola-deploy-after-hook-script))
     (message "Deploy done."))
    ;; Generic error control
    ((string-match-p "exited abnormally" event)
@@ -201,7 +201,7 @@ art it? ")
   ;; Execute before hook
   (if (eq nikola-build-before-hook-script nil)
       (run-hook-with-args 'nikola-build-before-hook "")
-    (nikola-execute-script nikola-build-before-hook-script))
+    (nikola-execute nikola-build-before-hook-script))
   (message "Building the site...")
   (if (eq nikola-verbose t)
       (set-process-sentinel
@@ -260,7 +260,7 @@ tart it? ")
 	(user-error "Exit")))
   (if (eq nikola-deploy-before-hook-script nil)
       (run-hook-with-args 'nikola-deploy-before-hook "")
-    (nikola-execute-script nikola-deploy-before-hook-script))
+    (nikola-execute nikola-deploy-before-hook-script))
   (if (eq nikola-deploy-input t)
       (progn
 	(set 'commit
@@ -285,7 +285,7 @@ tart it? ")
 					  nikola-command " deploy"))
      'nikola-sentinel)))
 
-(defun nikola-execute-script (path)
+(defun nikola-execute (path)
   "Execute script on PATH."
   (set 'default-directory nikola-output-root-directory)
   (if (eq nikola-verbose t)
