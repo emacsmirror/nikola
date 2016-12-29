@@ -28,6 +28,10 @@
   "Nikola's program path.  By default, it uses the one on the $PATH."
   :group 'nikola)
 
+(defcustom nikola-output-root-directory nil
+  "Site's default directory."
+  :group 'nikola)
+
 (defcustom nikola-verbose nil
   "Create a buffer with nikola commands output."
   :group 'nikola)
@@ -46,8 +50,8 @@ hen set to t, uses the `auto` parameter."
   :group 'nikola)
 
 (defcustom nikola-deploy-input nil
-  "If nil, just execute plain deploy, if t, asks for user input, any string is\
-passed to the deploy string."
+  "If nil, just execute plain deploy, if t, asks for user input, any string i\
+s passed to the deploy string."
   :group 'nikola)
 
 (defcustom nikola-deploy-input-default "New post"
@@ -223,7 +227,7 @@ tart it? ")
 	     (read-string
 	      (concat "Enter the commit message (Default: "
 		      nikola-deploy-input-default "): ")))
-	(if (string="" 'commit)
+	(if (string="" commit)
 	    (set 'commit nikola-deploy-input-default)))
     (if (eq nikola-deploy-input nil)
 	(set 'commit nil)
