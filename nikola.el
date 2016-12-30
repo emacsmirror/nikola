@@ -292,13 +292,6 @@ tart it? ")
 					  nikola-command " deploy && " nikola-build-after-hook-script))
      'nikola-sentinel)))
 
-(defun nikola-execute (path)
-  "Execute script on PATH."
-  (set 'default-directory nikola-output-root-directory)
-  (if (eq nikola-verbose t)
-      (call-process-shell-command path nil "*Nikola*")
-    (call-process-shell-command path nil nil)))
-
 (provide 'nikola)
 
 ;;; nikola.el ends here
