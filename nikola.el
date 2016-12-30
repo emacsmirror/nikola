@@ -161,8 +161,7 @@ oesn't contain a Nikola site. Please, create it first.."))
      (string-match-p "finished" event)
      (string-match-p "nikola-build" (format "%s" process)))
     (if (eq nikola-build-after-hook-script nil)
-	(run-hook-with-args 'nikola-build-after-hook "")
-      (nikola-execute nikola-build-after-hook-script))
+	(run-hook-with-args 'nikola-build-after-hook ""))
     (message "Site built correctly."))
    ;; It enters when nikola-start-webserver's directory is not correct
    ((and
@@ -178,8 +177,7 @@ oesn't contain a Nikola site. Please, create it first.."))
      (string-match-p "finished" event)
      (string-match-p "nikola-deploy" (format "%s" process)))
     (if (eq nikola-deploy-after-hook-script nil)
-	(run-hook-with-args 'nikola-deploy-after-hook "")
-      (nikola-execute nikola-deploy-after-hook-script))
+	(run-hook-with-args 'nikola-deploy-after-hook ""))
     (message "Deploy done."))
    ;; Generic error control
    ((string-match-p "exited abnormally" event)
@@ -201,20 +199,25 @@ art it? ")
   ;; Execute before hook
   (if (eq nikola-build-before-hook-script nil)
       (run-hook-with-args 'nikola-build-before-hook "")
-    (nikola-execute nikola-build-before-hook-script))
+    (set 'nikola-build-before-hook-script (concat nikola-build-before-hook-script " && ")))
+  (if (eq nikola-build-after-hook-script t)
+      (set 'nikola-build-after-hook-script (concat " && " nikola-build-after-hook-script)))
   (message "Building the site...")
   (if (eq nikola-verbose t)
       (set-process-sentinel
-       (start-process-shell-command "nikola-build" "*Nikola*" (concat
-							       nikola-command
-							       " build"))
+       (start-process-shell-command
+	"nikola-build" "*Nikola*" (concat nikola-build-before-hook-script
+					  nikola-command " build "
+					  nikola-build-after-hook-script))
        'nikola-sentinel)
     (set-process-sentinel
-     (start-process-shell-command "nikola-build" nil (concat nikola-command
-							     " build"))
+     (start-process-shell-command
+      "nikola-build" nil (concat nikola-build-before-hook-script
+				 nikola-command
+				 " build " nikola-build-after-hook-script))
      'nikola-sentinel)))
 
-(defun nikola-start-webserver ()
+(defun nikola-webserver-start ()
   "Start nikola's webserver with the auto-building option."
   (interactive)
   (set 'default-directory nikola-output-root-directory)
@@ -242,7 +245,7 @@ nt to restart it?")
 				     nikola-webserver-port))
      'nikola-sentinel)))
 
-(defun nikola-stop-webserver ()
+(defun nikola-webserver-stop ()
   "Stops the webserver."
   (interactive)
   (if (get-process "nikola-webserver")
@@ -260,7 +263,9 @@ tart it? ")
 	(user-error "Exit")))
   (if (eq nikola-deploy-before-hook-script nil)
       (run-hook-with-args 'nikola-deploy-before-hook "")
-    (nikola-execute nikola-deploy-before-hook-script))
+    (set 'nikola-deploy-before-hook-script (concat nikola-deploy-before-hook-script " && ")))
+  (if (eq nikola-deploy-after-hook-script t)
+      (set 'nikola-deploy-after-hook-script (concat " && " nikola-deploy-after-hook-script)))
   (if (eq nikola-deploy-input t)
       (progn
 	(set 'commit
@@ -276,13 +281,15 @@ tart it? ")
   (if (eq nikola-verbose t)
       (set-process-sentinel
        (start-process-shell-command "nikola-deploy" "*Nikola*"
-				    (concat "COMMIT=\"" commit "\" "
-					    nikola-command " deploy"))
+				    (concat nikola-deploy-before-hook-script " "
+					    "COMMIT=\"" commit "\" "
+					    nikola-command " deploy " nikola-deploy-after-hook-script))
        'nikola-sentinel)
     (set-process-sentinel
      (start-process-shell-command "nikola-deploy" nil
-				  (concat "COMMIT=\"" commit "\" "
-					  nikola-command " deploy"))
+				  (concat nikola-deploy-before-hook-script " && "
+					  "COMMIT=\"" commit "\" "
+					  nikola-command " deploy && " nikola-build-after-hook-script))
      'nikola-sentinel)))
 
 (defun nikola-execute (path)
