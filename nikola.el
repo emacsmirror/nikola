@@ -287,9 +287,9 @@ tart it? ")
        'nikola-sentinel)
     (set-process-sentinel
      (start-process-shell-command "nikola-deploy" nil
-				  (concat nikola-deploy-before-hook-script " && "
+				  (concat nikola-deploy-before-hook-script " "
 					  "COMMIT=\"" commit "\" "
-					  nikola-command " deploy && " nikola-build-after-hook-script))
+					  nikola-command " deploy " nikola-build-after-hook-script))
      'nikola-sentinel)))
 
 (provide 'nikola)
