@@ -2,19 +2,19 @@
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org018d62a">1. nikola-mode</a>
+<li><a href="#org985245d">1. nikola.el</a>
 <ul>
-<li><a href="#org298cdf4">1.1. English</a>
+<li><a href="#orgd67492b">1.1. English</a>
 <ul>
-<li><a href="#org7f541ad">1.1.1. About</a></li>
-<li><a href="#orgd221f2f">1.1.2. Requirements</a></li>
-<li><a href="#orgeb061a1">1.1.3. Install</a></li>
-<li><a href="#orgde04fc7">1.1.4. Configuration</a></li>
-<li><a href="#org375dad9">1.1.5. Usage</a></li>
-<li><a href="#org2541eb3">1.1.6. License</a></li>
+<li><a href="#orga913e39">1.1.1. About</a></li>
+<li><a href="#org4fc18e1">1.1.2. Requirements</a></li>
+<li><a href="#org3a0f96b">1.1.3. Install</a></li>
+<li><a href="#org509866b">1.1.4. Configuration</a></li>
+<li><a href="#orga8bc031">1.1.5. Usage</a></li>
+<li><a href="#org8206764">1.1.6. License</a></li>
 </ul>
 </li>
-<li><a href="#org9ea512f">1.2. Castellano</a></li>
+<li><a href="#org4e995b7">1.2. Castellano</a></li>
 </ul>
 </li>
 </ul>
@@ -22,24 +22,24 @@
 </div>
 
 
-<a id="org018d62a"></a>
+<a id="org985245d"></a>
 
-# nikola-mode
+# nikola.el
 
 
-<a id="org298cdf4"></a>
+<a id="orgd67492b"></a>
 
 ## English
 
 
-<a id="org7f541ad"></a>
+<a id="orga913e39"></a>
 
 ### About
 
-This is a simple wrapper around nikola. It permits to build, deploy, start the webserver and execute hooks.
+This is a simple wrapper around [nikola](http://getnikola.com). Right now, it allows you to build, deploy, start/stop the webserver and execute hooks.
 
 
-<a id="orgd221f2f"></a>
+<a id="org4fc18e1"></a>
 
 ### Requirements
 
@@ -47,15 +47,17 @@ The extras package is recommended but not necessary.
 
     sudo pip3 install Nikola Nikola[extras]
 
+Also, emacs-async is necessary. you can install it from elpa with `M-x package-install RET async RET`.
 
-<a id="orgeb061a1"></a>
+
+<a id="org3a0f96b"></a>
 
 ### Install
 
     git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
 
 
-<a id="orgde04fc7"></a>
+<a id="org509866b"></a>
 
 ### Configuration
 
@@ -77,7 +79,7 @@ The relevant variables are on the `:config` section.
       (setq nikola-deploy-after-hook-script "rsync -avzP " nikola-output-directory "/var/backups/nikola/"))
 
 
-<a id="org375dad9"></a>
+<a id="orga8bc031"></a>
 
 ### Usage
 
@@ -103,9 +105,9 @@ The relevant variables are on the `:config` section.
 
     -   `nikola-webserver-port`: Nikola's webserver port. Set to **8000** by default.
 
-    -   `nikola-deploy-input`: If **nil**, just execute plain deploy, if **t**, asks for user input, **any string** is passed to the deploy string.
+    -   `nikola-deploy-input`: If **nil**, just execute plain deploy, if **t**, asks for user input, **any string** is passed to the deploy string automatically.
 
-        This variable is intended to use with a deploy script or command that uses git, thus needs a commit message. It could be used for whatever other reason, also. To use the message writed on emacs on the deploy order, you have to use the variable **$COMMIT**. For example, on your `conf.py` you could set:
+        This variable is intended to use with a deploy script or command that uses git, thus needs a commit message. It could be used for whatever other reason, also. To use the message writed on emacs on the deploy order, you have to use the variable **$COMMIT**. For example, your deploy command could be:
 
         DEPLOY_COMMANDS = {
              'default': [
@@ -113,7 +115,9 @@ The relevant variables are on the `:config` section.
              ]
          }
 
-    -   `nikola-deploy-input-default`: If `nikola-deploy-input` is **t**, this variable changes the default value so you can just press RET.
+    Set to **nil** by default.
+
+    -   `nikola-deploy-input-default`: If `nikola-deploy-input` is **t**, this variable changes the default value so you can just press RET. Set to **New post** by default.
 
 3.  Hooks:
 
@@ -141,8 +145,10 @@ The relevant variables are on the `:config` section.
 
         (setq nikola-deploy-before-hook-script "~/scripts/pre-deploy.sh")
 
+    For more complicated functions, you should use a hook.
 
-<a id="org2541eb3"></a>
+
+<a id="org8206764"></a>
 
 ### License
 
@@ -163,7 +169,7 @@ The relevant variables are on the `:config` section.
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-<a id="org9ea512f"></a>
+<a id="org4e995b7"></a>
 
 ## Castellano
 

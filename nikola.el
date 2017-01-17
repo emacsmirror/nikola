@@ -60,6 +60,9 @@
 ;;   • `nikola-deploy-after-hook-script'
 
 ;;; Code:
+
+(require 'async)
+
 (defgroup nikola nil
   "Wrappers around nikola command."
   :group 'tools)
@@ -141,101 +144,60 @@ s passed to the deploy string."
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
   (cond
-   ;; It enters when nikola-build returns an error
-   ((string-match-p "This command needs to run inside an existing Nikola site"
-		    event)
-    (message "The directory nikola-output-root-directory doesn't exist or d\
-oesn't contain a Nikola site. Please, create it first.."))
    ;; It enters when nikola-stop-webserver
    ((and
      (string-match-p "(hangup)" event)
      (string-match-p "nikola-webserver" (format "%s" process)))
-    (message "Webserver stopped."))
-   ;; It enters when restart nikola-build
-   ((and
-     (string-match-p "(hangup)" event)
-     (string-match-p "nikola-build" (format "%s" process)))
-    (message "Rebuilding the site..."))
-   ;; It enters when nikola-build stops correctly
-   ((and
-     (string-match-p "finished" event)
-     (string-match-p "nikola-build" (format "%s" process)))
-    (if (eq nikola-build-after-hook-script nil)
-	(run-hook-with-args 'nikola-build-after-hook ""))
-    (message "Site built correctly."))
-   ;; It enters when nikola-start-webserver's directory is not correct
-   ((and
-     (string-match-p "finished" event)
-     (string-match-p "nikola-webserver" (format "%s" process)))
-    (if (eq nikola-verbose nil)
-	(message "Something went wrong. You may want to set nikola-verbose to t\
- and retry.")
-      (message "Something went wrong. You may want to check the *Nikola* buffer\
-.")))
-   ;; It enteres when nikola-deploy finishes correctly
-   ((and
-     (string-match-p "finished" event)
-     (string-match-p "nikola-deploy" (format "%s" process)))
-    (if (eq nikola-deploy-after-hook-script nil)
-	(run-hook-with-args 'nikola-deploy-after-hook ""))
-    (message "Deploy done."))
-   ;; Generic error control
-   ((string-match-p "exited abnormally" event)
-    (if (eq nikola-verbose nil)
-	(message "Something went wrong. You may want to set nikola-verbose to t\
- and retry.")
-      (message "Something went wrong. You may want to check the *Nikola* buffer\
-.")))))
+    (message "Webserver stopped."))))
 
 (defun nikola-build ()
   "Build the site with nikola build."
   (interactive)
-  (set 'default-directory nikola-output-root-directory)
-  (if (get-process "nikola-build")
-      (if (y-or-n-p "There's a nikola-build process active. Do you want to rest\
-art it? ")
-	  (progn (signal-process "nikola-build" 1) (sleep-for 1))
-	(user-error "Exit")))
-  ;; Execute before hook
-  (if (eq nikola-build-before-hook-script nil)
-      (run-hook-with-args 'nikola-build-before-hook "")
-    (set 'nikola-build-before-hook-script (concat nikola-build-before-hook-script " && ")))
-  (if (eq nikola-build-after-hook-script t)
-      (set 'nikola-build-after-hook-script (concat " && " nikola-build-after-hook-script)))
   (message "Building the site...")
-  (if (eq nikola-verbose t)
-      (set-process-sentinel
-       (start-process-shell-command
-	"nikola-build" "*Nikola*" (concat nikola-build-before-hook-script
-					  nikola-command " build "
-					  nikola-build-after-hook-script))
-       'nikola-sentinel)
-    (set-process-sentinel
-     (start-process-shell-command
-      "nikola-build" nil (concat nikola-build-before-hook-script
-				 nikola-command
-				 " build " nikola-build-after-hook-script))
-     'nikola-sentinel)))
+  (async-start
+   `(lambda()
+      ,(async-inject-variables "\\(nikola-\\)")
+      (setq default-directory nikola-output-root-directory)
+      (run-hook-with-args 'nikola-build-before-hook "")
+      (setq output nil)
+      (if (not (eq nikola-build-before-hook-script nil))
+	  (setq output (shell-command-to-string nikola-build-before-hook-script)))
+      (setq output (concat output (shell-command-to-string (concat nikola-command " build"))))
+      (if (not (eq nikola-build-after-hook-script nil))
+	  (setq output (concat output (shell-command-to-string nikola-build-after-hook-script))))
+      (run-hook-with-args 'nikola-build-after-hook "")
+      output)
+   (lambda (result)
+     (if (search "This command needs to run inside an existing Nikola site." result)
+	 (if (eq nikola-verbose t)
+	     (message "Something went wrong. You may want to set nikola-verbose to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* buffer."))
+       (message "Site build correctly."))
+     (if (eq nikola-verbose t)
+	 (save-window-excursion
+	   (switch-to-buffer "*Nikola*")
+	   (kbd "C-u")(read-only-mode 0)
+	   (insert result)
+	   (kbd "C-u")(read-only-mode 1))))))
 
 (defun nikola-webserver-start ()
   "Start nikola's webserver with the auto-building option."
   (interactive)
-  (set 'default-directory nikola-output-root-directory)
+  (setq default-directory nikola-output-root-directory)
   (if (eq nikola-webserver-auto t)
-      (set 'webserver "auto")
-    (set 'webserver "serve"))
+      (setq webserver "auto")
+    (setq webserver "serve"))
   (if (get-process "nikola-webserver")
       (if (y-or-n-p "There's a nikola-start-webserver process active. Do you wa\
 nt to restart it?")
-	  (progn (nikola-stop-webserver)(sleep-for 1))
+	  (progn (nikola-webserver-stop)(sleep-for 1))
 	(user-error "Exit")))
   (message (concat "Serving Webserver on " nikola-webserver-host ":"
 		   nikola-webserver-port "..."))
   (if (eq nikola-verbose t)
       (set-process-sentinel
        (start-process-shell-command
-	"nikola-webserver" "*Nikola*" (concat nikola-command " " webserver
-					      " -a " nikola-webserver-host
+	"nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command " " webserver " -a " nikola-webserver-host
 					      " -p " nikola-webserver-port))
        'nikola-sentinel)
     (set-process-sentinel
@@ -255,42 +217,44 @@ nt to restart it?")
 (defun nikola-deploy ()
   "Deploys the site using the default script."
   (interactive)
-  (set 'default-directory nikola-output-root-directory)
-  (if (get-process "nikola-deploy")
-      (if (y-or-n-p "There's a nikola-deploy process active. Do you want to res\
-tart it? ")
-	  (progn (signal-process "nikola-deploy" 1) (sleep-for 1))
-	(user-error "Exit")))
-  (if (eq nikola-deploy-before-hook-script nil)
-      (run-hook-with-args 'nikola-deploy-before-hook "")
-    (set 'nikola-deploy-before-hook-script (concat nikola-deploy-before-hook-script " && ")))
-  (if (eq nikola-deploy-after-hook-script t)
-      (set 'nikola-deploy-after-hook-script (concat " && " nikola-deploy-after-hook-script)))
   (if (eq nikola-deploy-input t)
       (progn
-	(set 'commit
-	     (read-string
-	      (concat "Enter the commit message (Default: "
-		      nikola-deploy-input-default "): ")))
-	(if (string="" commit)
-	    (set 'commit nikola-deploy-input-default)))
+	(setq nikola-commit
+	      (read-string
+	       (concat "Enter the commit message (Default: "
+		       nikola-deploy-input-default "): ")))
+	(if (string="" nikola-commit)
+	    (setq nikola-commit nikola-deploy-input-default)))
     (if (eq nikola-deploy-input nil)
-	(set 'commit nil)
-      (set 'commit nikola-deploy-input)))
+	(setq nikola-commit nil)
+      (setq nikola-commit nikola-deploy-input)))
   (message "Deploying the site...")
-  (if (eq nikola-verbose t)
-      (set-process-sentinel
-       (start-process-shell-command "nikola-deploy" "*Nikola*"
-				    (concat nikola-deploy-before-hook-script " "
-					    "COMMIT=\"" commit "\" "
-					    nikola-command " deploy " nikola-deploy-after-hook-script))
-       'nikola-sentinel)
-    (set-process-sentinel
-     (start-process-shell-command "nikola-deploy" nil
-				  (concat nikola-deploy-before-hook-script " "
-					  "COMMIT=\"" commit "\" "
-					  nikola-command " deploy " nikola-build-after-hook-script))
-     'nikola-sentinel)))
+  (async-start
+   `(lambda ()
+      ,(async-inject-variables "\\(nikola-\\)")
+      (setq output nil)
+      (setq default-directory nikola-output-root-directory)
+      (run-hook-with-args 'nikola-deploy-before-hook "")
+      (if (not (eq nikola-deploy-before-hook-script nil))
+	  (setq output (shell-command-to-string nikola-deploy-before-hook-script)))
+      (setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit "\" "
+						    nikola-command " deploy ")))
+      (if (not (eq nikola-deploy-after-hook-script nil))
+	  (setq output (shell-command-to-string nikola-deploy-after-hook-script)))
+      (run-hook-with-args 'nikola-deploy-before-hook "")
+      output)
+   (lambda (result)
+     (if (search "This command needs to run inside an existing Nikola site." result)
+	 (if (eq nikola-verbose t)
+	     (message "Something went wrong. You may want to set nikola-verbose to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* buffer."))
+       (message "Site deployed correctly."))
+     (if (eq nikola-verbose t)
+	 (save-window-excursion
+	   (switch-to-buffer "*Nikola*")
+	   (kbd "C-u")(read-only-mode 0)
+	   (insert result)
+	   (kbd "C-u")(read-only-mode 1))))))
 
 (provide 'nikola)
 

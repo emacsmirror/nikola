@@ -1,13 +1,14 @@
 #+startup:indent
-* nikola-mode
+* nikola.el
 ** English
 *** About
-This is a simple wrapper around nikola. It permits to build, deploy, start the webserver and execute hooks.
+This is a simple wrapper around [[http://getnikola.com][nikola]]. Right now, it allows you to build, deploy, start/stop the webserver and execute hooks.
 *** Requirements
 The extras package is recommended but not necessary.
 #+BEGIN_SRC bash
 sudo pip3 install Nikola Nikola[extras]
 #+END_SRC
+Also, emacs-async is necessary. you can install it from elpa with =M-x package-install RET async RET=.
 *** Install
 #+BEGIN_SRC bash
 git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
@@ -52,9 +53,9 @@ The relevant variables are on the =:config= section.
 
 - =nikola-webserver-port=: Nikola's webserver port. Set to *8000* by default.
 
-- =nikola-deploy-input=: If *nil*, just execute plain deploy, if *t*, asks for user input, *any string* is passed to the deploy string.
+- =nikola-deploy-input=: If *nil*, just execute plain deploy, if *t*, asks for user input, *any string* is passed to the deploy string automatically.
 
-  This variable is intended to use with a deploy script or command that uses git, thus needs a commit message. It could be used for whatever other reason, also. To use the message writed on emacs on the deploy order, you have to use the variable *$COMMIT*. For example, on your =conf.py= you could set:
+  This variable is intended to use with a deploy script or command that uses git, thus needs a commit message. It could be used for whatever other reason, also. To use the message writed on emacs on the deploy order, you have to use the variable *$COMMIT*. For example, your deploy command could be:
 
 #+BEGIN_SRC python
 DEPLOY_COMMANDS = {
@@ -64,8 +65,9 @@ DEPLOY_COMMANDS = {
  }
 #+END_SRC
 
-- =nikola-deploy-input-default=: If =nikola-deploy-input= is *t*, this variable changes the default value so you can just press RET.
+  Set to *nil* by default.
 
+- =nikola-deploy-input-default=: If =nikola-deploy-input= is *t*, this variable changes the default value so you can just press RET. Set to *New post* by default.
 **** Hooks:
 Use them as you would usually do.
 
@@ -92,6 +94,8 @@ For example, to execute a script before deploying:
 #+BEGIN_SRC emacs-lisp
 (setq nikola-deploy-before-hook-script "~/scripts/pre-deploy.sh")
 #+END_SRC
+
+For more complicated functions, you should use a hook.
 *** License
 #+BEGIN_SRC text
 Author:: drymer <drymer [ EN ] autistici.org>
