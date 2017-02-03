@@ -141,6 +141,8 @@ s passed to the deploy string."
   :type 'hook
   :group 'nikola)
 
+(defvar nikola-version-v nil)
+
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
   (cond
@@ -256,6 +258,22 @@ nt to restart it?")
 	   (kbd "C-u")(read-only-mode 0)
 	   (insert result)
 	   (kbd "C-u")(read-only-mode 1))))))
+
+(defun nikola-version ()
+  "Shows nikola and nikola.el version."
+  (interactive)
+  (if (eq nikola-version-v nil)
+      (async-start
+       `(lambda()
+	  (setq output (shell-command-to-string "nikola version"))
+	  (setq output (concat output "Nikola.el v0.1"))
+	  output)
+       (lambda (result)
+	 (setq nikola-version-v result)))
+    (message nikola-version-v)))
+
+;; Since `nikola version` is so slow, get it's version async when loading this mode
+(nikola-version)
 
 (provide 'nikola)
 
