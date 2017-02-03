@@ -157,15 +157,15 @@ s passed to the deploy string."
   (async-start
    `(lambda()
       ,(async-inject-variables "\\(nikola-\\)")
-      (setq default-directory nikola-output-root-directory)
-      (run-hook-with-args 'nikola-build-before-hook "")
-      (setq output nil)
-      (if (not (eq nikola-build-before-hook-script nil))
-	  (setq output (shell-command-to-string nikola-build-before-hook-script)))
-      (setq output (concat output (shell-command-to-string (concat nikola-command " build"))))
-      (if (not (eq nikola-build-after-hook-script nil))
-	  (setq output (concat output (shell-command-to-string nikola-build-after-hook-script))))
-      (run-hook-with-args 'nikola-build-after-hook "")
+      (let ((default-directory nikola-output-root-directory))
+	(run-hook-with-args 'nikola-build-before-hook "")
+	(setq output nil)
+	(if (not (eq nikola-build-before-hook-script nil))
+	    (setq output (shell-command-to-string nikola-build-before-hook-script)))
+	(setq output (concat output (shell-command-to-string (concat nikola-command " build"))))
+	(if (not (eq nikola-build-after-hook-script nil))
+	    (setq output (concat output (shell-command-to-string nikola-build-after-hook-script))))
+	(run-hook-with-args 'nikola-build-after-hook ""))
       output)
    (lambda (result)
      (if (search "This command needs to run inside an existing Nikola site." result)
@@ -183,7 +183,6 @@ s passed to the deploy string."
 (defun nikola-webserver-start ()
   "Start nikola's webserver with the auto-building option."
   (interactive)
-  (setq default-directory nikola-output-root-directory)
   (if (eq nikola-webserver-auto t)
       (setq webserver "auto")
     (setq webserver "serve"))
@@ -192,20 +191,22 @@ s passed to the deploy string."
 nt to restart it?")
 	  (progn (nikola-webserver-stop)(sleep-for 1))
 	(user-error "Exit")))
-  (message (concat "Serving Webserver on " nikola-webserver-host ":"
+  (message (concat "Serving Webserver on " nikola-webserver-host " (it can take a while):"
 		   nikola-webserver-port "..."))
   (if (eq nikola-verbose t)
+      (let ((default-directory nikola-output-root-directory))
+	(set-process-sentinel
+	 (start-process-shell-command
+	  "nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command " " webserver " -a " nikola-webserver-host
+						" -p " nikola-webserver-port))
+	 'nikola-sentinel))
+    (let ((default-directory nikola-output-root-directory))
       (set-process-sentinel
        (start-process-shell-command
-	"nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command " " webserver " -a " nikola-webserver-host
-					      " -p " nikola-webserver-port))
-       'nikola-sentinel)
-    (set-process-sentinel
-     (start-process-shell-command
-      "nikola-webserver" nil (concat nikola-command " " webserver " -a "
-				     nikola-webserver-host " -p "
-				     nikola-webserver-port))
-     'nikola-sentinel)))
+	"nikola-webserver" nil (concat nikola-command " " webserver " -a "
+				       nikola-webserver-host " -p "
+				       nikola-webserver-port))
+       'nikola-sentinel))))
 
 (defun nikola-webserver-stop ()
   "Stops the webserver."
@@ -233,16 +234,16 @@ nt to restart it?")
    `(lambda ()
       ,(async-inject-variables "\\(nikola-\\)")
       (setq output nil)
-      (setq default-directory nikola-output-root-directory)
-      (run-hook-with-args 'nikola-deploy-before-hook "")
-      (if (not (eq nikola-deploy-before-hook-script nil))
-	  (setq output (shell-command-to-string nikola-deploy-before-hook-script)))
-      (setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit "\" "
-						    nikola-command " deploy ")))
-      (if (not (eq nikola-deploy-after-hook-script nil))
-	  (setq output (shell-command-to-string nikola-deploy-after-hook-script)))
-      (run-hook-with-args 'nikola-deploy-before-hook "")
-      output)
+      (let ((default-directory nikola-output-root-directory))
+	(run-hook-with-args 'nikola-deploy-before-hook "")
+	(if (not (eq nikola-deploy-before-hook-script nil))
+	    (setq output (shell-command-to-string nikola-deploy-before-hook-script)))
+	(setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit "\" "
+						      nikola-command " deploy ")))
+	(if (not (eq nikola-deploy-after-hook-script nil))
+	    (setq output (shell-command-to-string nikola-deploy-after-hook-script)))
+	(run-hook-with-args 'nikola-deploy-before-hook ""))
+	output)
    (lambda (result)
      (if (search "This command needs to run inside an existing Nikola site." result)
 	 (if (eq nikola-verbose t)
