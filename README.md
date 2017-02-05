@@ -85,6 +85,10 @@ The relevant variables are on the `:config` section.
 
 1.  Main commands:
 
+    -   `nikola-new-post`: Creates a new post and opens it.
+
+    -   `nikola-new-page`: Creates a new page and opens it.
+
     -   `nikola-build`: Builds the site.
 
     -   `nikola-start-webserver`: Starts nikola's webserver.
@@ -92,6 +96,8 @@ The relevant variables are on the `:config` section.
     -   `nikola-stop-webserver`: Stops nikola's webserver.
 
     -   `nikola-deploy`: Deploys the site.
+
+    -   `nikola-version`: Shows nikola and nikola.el version.
 
 2.  Variables:
 
@@ -119,6 +125,10 @@ The relevant variables are on the `:config` section.
 
     -   `nikola-deploy-input-default`: If `nikola-deploy-input` is **t**, this variable changes the default value so you can just press RET. Set to **New post** by default.
 
+    -   `nikola-new-post-extension`: The extension of new posts. If it's a list, ido completion will be offered. Set to **html** by default.
+
+    -   `nikola-new-page-extension`: The extension of new pages. If it's a list, ido completion will be offered. Set to **html** by default.
+
 3.  Hooks:
 
     Use them as you would usually do.
@@ -145,7 +155,7 @@ The relevant variables are on the `:config` section.
 
         (setq nikola-deploy-before-hook-script "~/scripts/pre-deploy.sh")
 
-    For more complicated functions, you should use a hook.
+    For more complicated things, you should use create a function and add is a hook.
 
 
 <a id="org8206764"></a>
