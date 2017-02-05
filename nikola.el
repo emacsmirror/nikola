@@ -320,7 +320,8 @@ nt to restart it?")
       (write-file (concat nikola-output-root-directory "posts/" slug ".meta")))
     (with-temp-buffer
       (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "posts/" slug extension)))))
+      (write-file (concat nikola-output-root-directory "posts/" slug extension)))
+    (find-file (concat nikola-output-root-directory "posts/" slug extension))))
 
 (defun nikola-new-page()
   "Creates a new page on nikola-output-root-directory."
@@ -343,7 +344,8 @@ nt to restart it?")
       (write-file (concat nikola-output-root-directory "stories/" slug ".meta")))
     (with-temp-buffer
       (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "stories/" slug extension)))))
+      (write-file (concat nikola-output-root-directory "stories/" slug extension)))
+    (find-file (concat nikola-output-root-directory "stories/" slug extension))))
 
 (defun nikola-version ()
   "Shows nikola and nikola.el version."
