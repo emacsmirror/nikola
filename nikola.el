@@ -97,6 +97,11 @@ hen set to t, uses the `auto` parameter."
 s passed to the deploy string."
   :group 'nikola)
 
+(defcustom nikola-new-post-extension "html"
+  "Extension of new posts. It can be a string or a list. Default points to '.h\
+tml'"
+  :group 'nikola)
+
 (defcustom nikola-deploy-input-default "New post"
   "Default commit message."
   :group 'nikola)
@@ -258,6 +263,66 @@ nt to restart it?")
 	   (kbd "C-u")(read-only-mode 0)
 	   (insert result)
 	   (kbd "C-u")(read-only-mode 1))))))
+
+(defun nikola-clean-slug (title)
+  "Clean the title to make the slug."
+  (setq slug (downcase title))
+  (setq slug (replace-regexp-in-string "\\(á\\|à\\|â\\|ä\\)" "a" slug))
+  (setq slug (replace-regexp-in-string "\\(é\\|è\\|ê\\|ë\\)" "e" slug))
+  (setq slug (replace-regexp-in-string "\\(í\\|ì\\|î\\|ï\\)" "i" slug))
+  (setq slug (replace-regexp-in-string "\\(ó\\|ò\\|ô\\|ö\\)" "o" slug))
+  (setq slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
+  (setq slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
+  (setq slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" "" slug))
+  (setq slug (replace-regexp-in-string "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
+  (setq slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
+  slug)
+
+(defun nikola-new-post()
+  "Creates a new post on nikola-output-root-directory."
+  (interactive)
+  (setq title (read-string "Insert the title of the new post: "))
+  (setq slug (nikola-clean-slug title))
+  (if (listp nikola-new-post-extension)
+      (setq extension (concat "." (ido-completing-read "Which extension you want to use? " nikola-new-post-extension)))
+    (setq extension (concat "." nikola-new-post-extension)))
+  (setq slug (nikola-clean-slug title))
+  (catch 'nothing
+    (if (file-exists-p (concat nikola-output-root-directory "posts/" slug extension))
+	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
+	    (throw 'nothing "normal exit value")))
+    (with-temp-buffer
+      (insert (concat ".. title: " title "\n"))
+      (insert (concat ".. slug: " slug "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S") "\n"))
+      (insert ".. tags: \n")
+      (write-file (concat nikola-output-root-directory "posts/" slug ".meta")))
+    (with-temp-buffer
+      (insert "Write your publication here.")
+      (write-file (concat nikola-output-root-directory "posts/" slug extension)))))
+
+(defun nikola-new-page()
+  "Creates a new page on nikola-output-root-directory."
+  (interactive)
+  (setq title (read-string "Insert the title of the new page: "))
+  (setq slug (nikola-clean-slug title))
+  (if (listp nikola-new-post-extension)
+      (setq extension (concat "." (ido-completing-read "Which extension you want to use? " nikola-new-post-extension)))
+    (setq extension (concat "." nikola-new-post-extension)))
+  (setq slug (nikola-clean-slug title))
+  (catch 'nothing
+    (if (file-exists-p (concat nikola-output-root-directory "stories/" slug extension))
+	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
+	    (throw 'nothing "normal exit value")))
+    (with-temp-buffer
+      (insert (concat ".. title: " title "\n"))
+      (insert (concat ".. slug: " slug "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S") "\n"))
+      (insert ".. tags: \n")
+      (write-file (concat nikola-output-root-directory "stories/" slug ".meta")))
+    (with-temp-buffer
+      (insert "Write your publication here.")
+      (write-file (concat nikola-output-root-directory "stories/" slug extension)))))
 
 (defun nikola-version ()
   "Shows nikola and nikola.el version."
