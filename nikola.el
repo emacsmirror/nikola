@@ -96,8 +96,8 @@
   :group 'nikola)
 
 (defcustom nikola-webserver-auto nil
-  "When nil, the function nikola-start-webserver uses `server` parameter, but w\
-hen set to t, uses the `auto` parameter."
+  "When nil, the function nikola-start-webserver uses `server` parameter, but \
+when set to t, uses the `auto` parameter."
   :group 'nikola)
 
 (defcustom nikola-webserver-host "127.0.0.1"
@@ -194,17 +194,23 @@ tml'"
 	(run-hook-with-args 'nikola-build-before-hook "")
 	(setq output nil)
 	(if (not (eq nikola-build-before-hook-script nil))
-	    (setq output (shell-command-to-string nikola-build-before-hook-script)))
-	(setq output (concat output (shell-command-to-string (concat nikola-command " build"))))
+	    (setq output (shell-command-to-string
+			  nikola-build-before-hook-script)))
+	(setq output (concat output (shell-command-to-string
+				     (concat nikola-command " build"))))
 	(if (not (eq nikola-build-after-hook-script nil))
-	    (setq output (concat output (shell-command-to-string nikola-build-after-hook-script))))
+	    (setq output (concat output (shell-command-to-string
+					 nikola-build-after-hook-script))))
 	(run-hook-with-args 'nikola-build-after-hook ""))
       output)
    (lambda (result)
-     (if (search "This command needs to run inside an existing Nikola site." result)
+     (if (search "This command needs to run inside an existing Nikola site."
+		 result)
 	 (if (eq nikola-verbose t)
-	     (message "Something went wrong. You may want to set nikola-verbose to t and retry it.")
-	   (message "Something went wrong. You may want to check the *Nikola* buffer."))
+	     (message "Something went wrong. You may want to set nikola-verbos\
+e to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* \
+buffer."))
        (message "Site build correctly."))
      (if (eq nikola-verbose t)
 	 (save-window-excursion
@@ -233,8 +239,11 @@ ant to restart it?")
       (let ((default-directory nikola-output-root-directory))
 	(set-process-sentinel
 	 (start-process-shell-command
-	  "nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command " " webserver " -a " nikola-webserver-host
-						" -p " nikola-webserver-port browser))
+	  "nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command
+						" " webserver " -a "
+						nikola-webserver-host
+						" -p " nikola-webserver-port
+						browser))
 	 'nikola-sentinel))
     (let ((default-directory nikola-output-root-directory))
       (set-process-sentinel
@@ -273,18 +282,24 @@ ant to restart it?")
       (let ((default-directory nikola-output-root-directory))
 	(run-hook-with-args 'nikola-deploy-before-hook "")
 	(if (not (eq nikola-deploy-before-hook-script nil))
-	    (setq output (shell-command-to-string nikola-deploy-before-hook-script)))
-	(setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit "\" "
-						      nikola-command " deploy ")))
+	    (setq output (shell-command-to-string
+			  nikola-deploy-before-hook-script)))
+	(setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit
+						      "\" " nikola-command
+						      " deploy ")))
 	(if (not (eq nikola-deploy-after-hook-script nil))
-	    (setq output (shell-command-to-string nikola-deploy-after-hook-script)))
+	    (setq output (shell-command-to-string
+			  nikola-deploy-after-hook-script)))
 	(run-hook-with-args 'nikola-deploy-before-hook ""))
 	output)
    (lambda (result)
-     (if (search "This command needs to run inside an existing Nikola site." result)
+     (if (search "This command needs to run inside an existing Nikola site."
+		 result)
 	 (if (eq nikola-verbose t)
-	     (message "Something went wrong. You may want to set nikola-verbose to t and retry it.")
-	   (message "Something went wrong. You may want to check the *Nikola* buffer."))
+	     (message "Something went wrong. You may want to set nikola-verbos\
+e to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* \
+buffer."))
        (message "Site deployed correctly."))
      (if (eq nikola-verbose t)
 	 (save-window-excursion
@@ -303,7 +318,8 @@ ant to restart it?")
   (setq slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
   (setq slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
   (setq slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" "" slug))
-  (setq slug (replace-regexp-in-string "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
+  (setq slug (replace-regexp-in-string
+	      "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
   (setq slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
   slug)
 
@@ -313,22 +329,26 @@ ant to restart it?")
   (setq title (read-string "Insert the title of the new post: "))
   (setq slug (nikola-clean-slug title))
   (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you want to use? " nikola-new-post-extension)))
+      (setq extension (concat "." (ido-completing-read "Which extension you wa\
+nt to use? " nikola-new-post-extension)))
     (setq extension (concat "." nikola-new-post-extension)))
   (setq slug (nikola-clean-slug title))
   (catch 'nothing
-    (if (file-exists-p (concat nikola-output-root-directory "posts/" slug extension))
+    (if (file-exists-p (concat nikola-output-root-directory "posts/" slug
+			       extension))
 	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
 	    (throw 'nothing "normal exit value")))
     (with-temp-buffer
       (insert (concat ".. title: " title "\n"))
       (insert (concat ".. slug: " slug "\n"))
-      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S") "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
+		      "\n"))
       (insert ".. tags: \n")
       (write-file (concat nikola-output-root-directory "posts/" slug ".meta")))
     (with-temp-buffer
       (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "posts/" slug extension)))
+      (write-file (concat nikola-output-root-directory "posts/" slug
+			  extension)))
     (find-file (concat nikola-output-root-directory "posts/" slug extension))))
 
 (defun nikola-new-page()
@@ -337,23 +357,29 @@ ant to restart it?")
   (setq title (read-string "Insert the title of the new page: "))
   (setq slug (nikola-clean-slug title))
   (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you want to use? " nikola-new-post-extension)))
+      (setq extension (concat "." (ido-completing-read "Which extension you wa\
+nt to use? " nikola-new-post-extension)))
     (setq extension (concat "." nikola-new-post-extension)))
   (setq slug (nikola-clean-slug title))
   (catch 'nothing
-    (if (file-exists-p (concat nikola-output-root-directory "stories/" slug extension))
+    (if (file-exists-p (concat nikola-output-root-directory "stories/" slug
+			       extension))
 	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
 	    (throw 'nothing "normal exit value")))
     (with-temp-buffer
       (insert (concat ".. title: " title "\n"))
       (insert (concat ".. slug: " slug "\n"))
-      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S") "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
+		      "\n"))
       (insert ".. tags: \n")
-      (write-file (concat nikola-output-root-directory "stories/" slug ".meta")))
+      (write-file (concat nikola-output-root-directory "stories/" slug
+			  ".meta")))
     (with-temp-buffer
       (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "stories/" slug extension)))
-    (find-file (concat nikola-output-root-directory "stories/" slug extension))))
+      (write-file (concat nikola-output-root-directory "stories/" slug
+			  extension)))
+    (find-file (concat nikola-output-root-directory "stories/" slug
+		       extension))))
 
 (defun nikola-version ()
   "Shows nikola and nikola.el version."
@@ -368,7 +394,8 @@ ant to restart it?")
 	 (setq nikola-version-v result)))
     (message nikola-version-v)))
 
-;; Since `nikola version` is so slow, get it's version async when loading this mode
+;; Since `nikola version` is so slow, get it's version async when loading this
+;; mode
 (nikola-version)
 
 (provide 'nikola)
