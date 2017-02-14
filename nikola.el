@@ -108,6 +108,10 @@ hen set to t, uses the `auto` parameter."
   "Default host to serve nikola's webpage."
   :group 'nikola)
 
+(defcustom nikola-webserver-open-browser nil
+  "If set to t, opens xdg defined browser."
+  :group 'nikola)
+
 (defcustom nikola-deploy-input nil
   "If nil, just execute plain deploy, if t, asks for user input, any string i\
 s passed to the deploy string."
@@ -167,7 +171,8 @@ tml'"
   :type 'hook
   :group 'nikola)
 
-(defvar nikola-version-v nil)
+(defvar nikola-version-v nil
+  "Do not modify this variable.")
 
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
@@ -214,26 +219,29 @@ tml'"
   (if (eq nikola-webserver-auto t)
       (setq webserver "auto")
     (setq webserver "serve"))
+  (if (eq nikola-webserver-open-browser t)
+      (setq browser " -b")
+    (setq browser ""))
   (if (get-process "nikola-webserver")
-      (if (y-or-n-p "There's a nikola-start-webserver process active. Do you wa\
-nt to restart it?")
+      (if (y-or-n-p "There's a nikola-start-webserver process active. Do you w\
+ant to restart it?")
 	  (progn (nikola-webserver-stop)(sleep-for 1))
 	(user-error "Exit")))
-  (message (concat "Serving Webserver on " nikola-webserver-host " (it can take a while):"
-		   nikola-webserver-port "..."))
+  (message (concat "Serving Webserver on " nikola-webserver-host
+		   nikola-webserver-port "... " "(it can take a while):"))
   (if (eq nikola-verbose t)
       (let ((default-directory nikola-output-root-directory))
 	(set-process-sentinel
 	 (start-process-shell-command
 	  "nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command " " webserver " -a " nikola-webserver-host
-						" -p " nikola-webserver-port))
+						" -p " nikola-webserver-port browser))
 	 'nikola-sentinel))
     (let ((default-directory nikola-output-root-directory))
       (set-process-sentinel
        (start-process-shell-command
 	"nikola-webserver" nil (concat nikola-command " " webserver " -a "
 				       nikola-webserver-host " -p "
-				       nikola-webserver-port))
+				       nikola-webserver-port browser))
        'nikola-sentinel))))
 
 (defun nikola-webserver-stop ()
