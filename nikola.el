@@ -236,22 +236,17 @@ ant to restart it?")
   (message (concat "Serving Webserver on " nikola-webserver-host
 		   nikola-webserver-port "... " "(it can take a while):"))
   (if (eq nikola-verbose t)
-      (let ((default-directory nikola-output-root-directory))
-	(set-process-sentinel
-	 (start-process-shell-command
-	  "nikola-webserver" "*Nikola*" (concat "NIKOLA_MONO=1 " nikola-command
-						" " webserver " -a "
-						nikola-webserver-host
-						" -p " nikola-webserver-port
-						browser))
-	 'nikola-sentinel))
-    (let ((default-directory nikola-output-root-directory))
-      (set-process-sentinel
-       (start-process-shell-command
-	"nikola-webserver" nil (concat nikola-command " " webserver " -a "
-				       nikola-webserver-host " -p "
-				       nikola-webserver-port browser))
-       'nikola-sentinel))))
+      (setq buffer-name-p "*Nikola*")
+    (setq buffer-name-p nil))
+  (let ((default-directory nikola-output-root-directory))
+    (set-process-sentinel
+     (start-process-shell-command
+      "nikola-webserver" buffer-name-p (concat "NIKOLA_MONO=1 " nikola-command
+					       " " webserver " -a "
+					       nikola-webserver-host
+					       " -p " nikola-webserver-port
+					       browser))
+     'nikola-sentinel)))
 
 (defun nikola-webserver-stop ()
   "Stops the webserver."
