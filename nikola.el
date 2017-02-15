@@ -394,6 +394,30 @@ nt to use? " nikola-new-post-extension)))
 	 (setq nikola-version-v result)))
     (message nikola-version-v)))
 
+(defun nikola-init ()
+  (interactive)
+  (async-start
+   `(lambda()
+      ,(async-inject-variables "\\(nikola-\\)")
+      (setq output (shell-command-to-string (concat "nikola init -q " nikola-output-root-directory)))
+      output)
+   (lambda (result)
+     (find-file (concat nikola-output-root-directory "conf.py"))
+     (if (search "This command needs to run inside an existing Nikola site."
+		 result)
+	 (if (eq nikola-verbose t)
+	     (message "Something went wrong. You may want to set nikola-verbos\
+e to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* \
+buffer."))
+       (message "Site created correctly. Let's edit the configuration file!"))
+     (if (eq nikola-verbose t)
+	 (save-window-excursion
+	   (switch-to-buffer "*Nikola*")
+	   (kbd "C-u")(read-only-mode 0)
+	   (insert result)
+	   (kbd "C-u")(read-only-mode 1))))))
+
 ;; Since `nikola version` is so slow, get it's version async when loading this
 ;; mode
 (nikola-version)
