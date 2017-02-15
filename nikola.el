@@ -108,7 +108,7 @@ when set to t, uses the `auto` parameter."
   "Default host to serve nikola's webpage."
   :group 'nikola)
 
-(defcustom nikola-webserver-open-browser nil
+(defcustom nikola-webserver-open-browser-p nil
   "If set to t, opens xdg defined browser."
   :group 'nikola)
 
@@ -171,7 +171,7 @@ tml'"
   :type 'hook
   :group 'nikola)
 
-(defvar nikola-version-v nil
+(defvar nikola-version-p nil
   "Do not modify this variable.")
 
 (defun nikola-sentinel (process event)
@@ -225,7 +225,7 @@ buffer."))
   (if (eq nikola-webserver-auto t)
       (setq webserver "auto")
     (setq webserver "serve"))
-  (if (eq nikola-webserver-open-browser t)
+  (if (eq nikola-webserver-open-browser-p t)
       (setq browser " -b")
     (setq browser ""))
   (if (get-process "nikola-webserver")
@@ -384,7 +384,7 @@ nt to use? " nikola-new-post-extension)))
 (defun nikola-version ()
   "Shows nikola and nikola.el version."
   (interactive)
-  (if (eq nikola-version-v nil)
+  (if (eq nikola-version-p nil)
       (async-start
        `(lambda()
 	  (setq output (shell-command-to-string "nikola version"))
