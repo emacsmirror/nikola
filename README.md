@@ -2,19 +2,20 @@
 <h2>&Iacute;ndice</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org985245d">1. nikola.el</a>
+<li><a href="#org0bc224d">1. nikola.el</a>
 <ul>
-<li><a href="#orgd67492b">1.1. English</a>
+<li><a href="#org5b8e4d3">1.1. English</a>
 <ul>
-<li><a href="#orga913e39">1.1.1. About</a></li>
-<li><a href="#org4fc18e1">1.1.2. Requirements</a></li>
-<li><a href="#org3a0f96b">1.1.3. Install</a></li>
-<li><a href="#org509866b">1.1.4. Configuration</a></li>
-<li><a href="#orga8bc031">1.1.5. Usage</a></li>
-<li><a href="#org8206764">1.1.6. License</a></li>
+<li><a href="#org0add57e">1.1.1. About</a></li>
+<li><a href="#org9b457be">1.1.2. Requirements</a></li>
+<li><a href="#org8035653">1.1.3. Install</a></li>
+<li><a href="#org1ed05ff">1.1.4. Configuration</a></li>
+<li><a href="#org26efe12">1.1.5. Advanced usage</a></li>
+<li><a href="#org2f63655">1.1.6. License</a></li>
+<li><a href="#orgc572119">1.1.7. Bugs, patches and feature requests</a></li>
 </ul>
 </li>
-<li><a href="#org4e995b7">1.2. Castellano</a></li>
+<li><a href="#orgac6bdf9">1.2. Castellano</a></li>
 </ul>
 </li>
 </ul>
@@ -22,24 +23,24 @@
 </div>
 
 
-<a id="org985245d"></a>
+<a id="org0bc224d"></a>
 
 # nikola.el
 
 
-<a id="orgd67492b"></a>
+<a id="org5b8e4d3"></a>
 
 ## English
 
 
-<a id="orga913e39"></a>
+<a id="org0add57e"></a>
 
 ### About
 
-This is a simple wrapper around [nikola](http://getnikola.com). Right now, it allows you to build, deploy, start/stop the webserver and execute hooks.
+This is a simple wrapper around [nikola](http://getnikola.com). Right now, it allows you to create a site, build, deploy, start/stop the webserver and execute hooks.
 
 
-<a id="org4fc18e1"></a>
+<a id="org9b457be"></a>
 
 ### Requirements
 
@@ -50,50 +51,43 @@ The extras package is recommended but not necessary.
 Also, emacs-async is necessary. you can install it from elpa with `M-x package-install RET async RET`.
 
 
-<a id="org3a0f96b"></a>
+<a id="org8035653"></a>
 
 ### Install
 
     git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
 
 
-<a id="org509866b"></a>
+<a id="org1ed05ff"></a>
 
 ### Configuration
 
-The relevant variables are on the `:config` section.
+A minimal configuration would be this.
 
-    (use-package nikola
-      :load-path "~/.emacs.d/lisp/nikola.el/"
-      :config
-      (setq nikola-output-root-directory "~/Documents/blog/")
-      (setq nikola-verbose t)
-      (setq nikola-webserver-auto t)
-      (setq nikola-webserver-host "127.0.0.1")
-      (setq nikola-webserver-port "8000")
-      (setq nikola-deploy-input t)
-      (setq nikola-deploy-input-default "New post")
-      (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
-      (setq nikola-build-after-hook-script nil)
-      (setq nikola-deploy-before-hook-script nil)
-      (setq nikola-deploy-after-hook-script "rsync -avzP " nikola-output-directory "/var/backups/nikola/"))
+    (add-to-list 'load-path "~/.emacs.d/lisp/nikola.el/")
+    (require 'nikola)
+    (setq nikola-output-root-directory "~/Documents/blog/")
+
+For a more advanced configuration check the next chapter.
 
 
-<a id="orga8bc031"></a>
+<a id="org26efe12"></a>
 
-### Usage
+### Advanced usage
 
 1.  Main commands:
 
-    -   `nikola-new-post`: Creates a new post and opens it.
+    -   `nikola-init`: Creates a default site and opens the file **conf.py** to edit it.
 
-    -   `nikola-new-page`: Creates a new page and opens it.
+    -   `nikola-new-post`: Creates a new post on **nikola-output-root-directory/posts/** and opens it.
+
+    -   `nikola-new-page`: Creates a new page on **nikola-output-root-directory/stories/** and opens it.
 
     -   `nikola-build`: Builds the site.
 
-    -   `nikola-start-webserver`: Starts nikola's webserver.
+    -   `nikola-start-webserver`: Starts webserver.
 
-    -   `nikola-stop-webserver`: Stops nikola's webserver.
+    -   `nikola-stop-webserver`: Stops webserver.
 
     -   `nikola-deploy`: Deploys the site.
 
@@ -101,7 +95,9 @@ The relevant variables are on the `:config` section.
 
 2.  Variables:
 
-    -   `nikola-output-root-directory`: Nikola's site directory.
+    -   `nikola-command`: The nikola command (no shit, Sherlock). It shouldn't be necessary to change it if it's on the PATH.
+
+    -   `nikola-output-root-directory`: Nikola's default directory.
 
     -   `nikola-verbose`: If set to **t**, it will create a buffer called **&lowast;Nikola&lowast;** with the output of all commands. Set to **nil** by default.
 
@@ -110,6 +106,8 @@ The relevant variables are on the `:config` section.
     -   `nikola-webserver-host`: Set it to **0.0.0.0** if you want to make the webserver accesible from outside the machine. Set to **127.0.0.1** by default.
 
     -   `nikola-webserver-port`: Nikola's webserver port. Set to **8000** by default.
+
+    -   `nikola-webserver-open-browser-p`: If set to **t**, opens xdg defined browser.
 
     -   `nikola-deploy-input`: If **nil**, just execute plain deploy, if **t**, asks for user input, **any string** is passed to the deploy string automatically.
 
@@ -133,32 +131,49 @@ The relevant variables are on the `:config` section.
 
     Use them as you would usually do.
 
-    -   `nikola-build-before-hook`
+    -   `nikola-build-before-hook`: Hook executed before nikola-build.
 
-    -   `nikola-build-after-hook`
+    -   `nikola-build-after-hook`: Hook executed after nikola-build.
 
-    -   `nikola-deploy-before-hook`
+    -   `nikola-deploy-before-hook`: Hook executed before nikola-deploy.
 
-    -   `nikola-deploy-after-hook`
+    -   `nikola-deploy-after-hook`: Hook executed after nikola-deploy.
 
     If you only want to execute a simple script or command before or after building or deploying, you can set the next variables to that script's path or command:
 
-    -   `nikola-build-before-hook-script`
+    -   `nikola-build-before-hook-script`: Path of a script to execute before building the site.
 
-    -   `nikola-build-after-hook-script`
+    -   `nikola-build-after-hook-script`: Path of the script to execute after building the site.
 
-    -   `nikola-deploy-before-hook-script`
+    -   `nikola-deploy-before-hook-script`: Path of the script to execute before deploying the site.
 
-    -   `nikola-deploy-after-hook-script`
+    -   `nikola-deploy-after-hook-script`:Path of the script to execute after deploying the site.
 
     For example, to execute a script before deploying:
 
         (setq nikola-deploy-before-hook-script "~/scripts/pre-deploy.sh")
 
-    For more complicated things, you should use create a function and add is a hook.
+    For more complicated things, you should use create a function and add id a hook.
+
+4.  Complete example
+
+        (use-package nikola
+          :load-path "~/Proyectos/nikola.el/"
+          :config
+          (setq nikola-output-root-directory "~/Documents/blog/")
+          (setq nikola-verbose t)
+          (setq nikola-webserver-auto nil)
+          (setq nikola-webserver-host "0.0.0.0")
+          (setq nikola-webserver-port "8080")
+          (setq nikola-webserver-open-browser-p t)
+          (setq nikola-deploy-input t)
+          (setq nikola-deploy-input-default "New article")
+          (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
+          (setq nikola-build-after-hook-script (concat nikola-output-root-directory "scripts/post-build.sh"))
+          (setq nikola-deploy-after-hook-script (concat nikola-output-root-directory "nikola iarchiver")))
 
 
-<a id="org8206764"></a>
+<a id="org2f63655"></a>
 
 ### License
 
@@ -179,7 +194,14 @@ The relevant variables are on the `:config` section.
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-<a id="org4e995b7"></a>
+<a id="orgc572119"></a>
+
+### Bugs, patches and feature requests
+
+If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [<https://git.daemons.cfr/drymer/nikola.el/>](https://git.daemons.cfr/drymer/nikola.el/)
+
+
+<a id="orgac6bdf9"></a>
 
 ## Castellano
 

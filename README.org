@@ -2,7 +2,7 @@
 * nikola.el
 ** English
 *** About
-This is a simple wrapper around [[http://getnikola.com][nikola]]. Right now, it allows you to build, deploy, start/stop the webserver and execute hooks.
+This is a simple wrapper around [[http://getnikola.com][nikola]]. Right now, it allows you to create a site, build, deploy, start/stop the webserver and execute hooks.
 *** Requirements
 The extras package is recommended but not necessary.
 #+BEGIN_SRC bash
@@ -14,42 +14,37 @@ Also, emacs-async is necessary. you can install it from elpa with =M-x package-i
 git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
 #+END_SRC
 *** Configuration
-The relevant variables are on the =:config= section.
+A minimal configuration would be this.
 
 #+BEGIN_SRC emacs-lisp
-(use-package nikola
-  :load-path "~/.emacs.d/lisp/nikola.el/"
-  :config
-  (setq nikola-output-root-directory "~/Documents/blog/")
-  (setq nikola-verbose t)
-  (setq nikola-webserver-auto t)
-  (setq nikola-webserver-host "127.0.0.1")
-  (setq nikola-webserver-port "8000")
-  (setq nikola-deploy-input t)
-  (setq nikola-deploy-input-default "New post")
-  (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
-  (setq nikola-build-after-hook-script nil)
-  (setq nikola-deploy-before-hook-script nil)
-  (setq nikola-deploy-after-hook-script "rsync -avzP " nikola-output-directory "/var/backups/nikola/"))
+(add-to-list 'load-path "~/.emacs.d/lisp/nikola.el/")
+(require 'nikola)
+(setq nikola-output-root-directory "~/Documents/blog/")
 #+END_SRC
-*** Usage
-**** Main commands:
-- =nikola-new-post=: Creates a new post and opens it.
 
-- =nikola-new-page=: Creates a new page and opens it.
+For a more advanced configuration check the next chapter.
+*** Advanced usage
+**** Main commands:
+- =nikola-init=: Creates a default site and opens the file *conf.py* to edit it.
+
+- =nikola-new-post=: Creates a new post on *nikola-output-root-directory/posts/* and opens it.
+
+- =nikola-new-page=: Creates a new page on *nikola-output-root-directory/stories/* and opens it.
 
 - =nikola-build=: Builds the site.
 
-- =nikola-start-webserver=: Starts nikola's webserver.
+- =nikola-start-webserver=: Starts webserver.
 
-- =nikola-stop-webserver=: Stops nikola's webserver.
+- =nikola-stop-webserver=: Stops webserver.
 
 - =nikola-deploy=: Deploys the site.
 
 - =nikola-version=: Shows nikola and nikola.el version.
 
 **** Variables:
-- =nikola-output-root-directory=: Nikola's site directory.
+- =nikola-command=: The nikola command (no shit, Sherlock). It shouldn't be necessary to change it if it's on the PATH.
+
+- =nikola-output-root-directory=: Nikola's default directory.
 
 - =nikola-verbose=: If set to *t*, it will create a buffer called *\ast{}Nikola\ast{}* with the output of all commands. Set to *nil* by default.
 
@@ -58,6 +53,8 @@ The relevant variables are on the =:config= section.
 - =nikola-webserver-host=: Set it to *0.0.0.0* if you want to make the webserver accesible from outside the machine. Set to *127.0.0.1* by default.
 
 - =nikola-webserver-port=: Nikola's webserver port. Set to *8000* by default.
+
+- =nikola-webserver-open-browser-p=: If set to *t*, opens xdg defined browser.
 
 - =nikola-deploy-input=: If *nil*, just execute plain deploy, if *t*, asks for user input, *any string* is passed to the deploy string automatically.
 
@@ -82,23 +79,23 @@ DEPLOY_COMMANDS = {
 **** Hooks:
 Use them as you would usually do.
 
-- =nikola-build-before-hook=
+- =nikola-build-before-hook=: Hook executed before nikola-build.
 
-- =nikola-build-after-hook=
+- =nikola-build-after-hook=: Hook executed after nikola-build.
 
-- =nikola-deploy-before-hook=
+- =nikola-deploy-before-hook=: Hook executed before nikola-deploy.
 
-- =nikola-deploy-after-hook=
+- =nikola-deploy-after-hook=: Hook executed after nikola-deploy.
 
 If you only want to execute a simple script or command before or after building or deploying, you can set the next variables to that script's path or command:
 
-- =nikola-build-before-hook-script=
+- =nikola-build-before-hook-script=: Path of a script to execute before building the site.
 
-- =nikola-build-after-hook-script=
+- =nikola-build-after-hook-script=: Path of the script to execute after building the site.
 
-- =nikola-deploy-before-hook-script=
+- =nikola-deploy-before-hook-script=: Path of the script to execute before deploying the site.
 
-- =nikola-deploy-after-hook-script=
+- =nikola-deploy-after-hook-script=:Path of the script to execute after deploying the site.
 
 For example, to execute a script before deploying:
 
@@ -106,7 +103,25 @@ For example, to execute a script before deploying:
 (setq nikola-deploy-before-hook-script "~/scripts/pre-deploy.sh")
 #+END_SRC
 
-For more complicated things, you should use create a function and add is a hook.
+For more complicated things, you should use create a function and add id a hook.
+**** Complete example
+#+BEGIN_SRC emacs-lisp
+(use-package nikola
+  :load-path "~/Proyectos/nikola.el/"
+  :config
+  (setq nikola-output-root-directory "~/Documents/blog/")
+  (setq nikola-verbose t)
+  (setq nikola-webserver-auto nil)
+  (setq nikola-webserver-host "0.0.0.0")
+  (setq nikola-webserver-port "8080")
+  (setq nikola-webserver-open-browser-p t)
+  (setq nikola-deploy-input t)
+  (setq nikola-deploy-input-default "New article")
+  (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
+  (setq nikola-build-after-hook-script (concat nikola-output-root-directory "scripts/post-build.sh"))
+  (setq nikola-deploy-after-hook-script (concat nikola-output-root-directory "nikola iarchiver")))
+#+END_SRC
+
 *** License
 #+BEGIN_SRC text
 Author:: drymer <drymer [ EN ] autistici.org>
@@ -125,5 +140,7 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #+END_SRC
+*** Bugs, patches and feature requests
+If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [[https://git.daemons.cfr/drymer/nikola.el/][https://git.daemons.cfr/drymer/nikola.el/]]
 ** Castellano
 TODO

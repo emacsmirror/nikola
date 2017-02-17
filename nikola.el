@@ -11,8 +11,9 @@
 ;; General Public License for more details.
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 ;;; Commentary:
+;; If you find a bug, you may send an e-mail or open an issue at
+;; https://git.daemons.cf/drymer/nikola.el/
 ;; ◊ Main commands:
 ;;   • `nikola-new-post': Creates a new post and opens it.
 ;;   • `nikola-new-page': Creates a new page and opens it.
@@ -84,51 +85,54 @@
   :group 'tools)
 
 (defcustom nikola-command "nikola"
-  "Nikola's program path.  By default, it uses the one on the $PATH."
+  "The nikola command (no shit, Sherlock). It shouldn't be necessary to change\
+ it if it's on the PATH."
   :group 'nikola)
 
 (defcustom nikola-output-root-directory nil
-  "Site's default directory."
+  "Nikola's default directory."
   :group 'nikola)
 
 (defcustom nikola-verbose nil
-  "Create a buffer with nikola commands output."
+  "If set to t, it will create a buffer called *Nikola* with the output of a\
+ll commands."
   :group 'nikola)
 
 (defcustom nikola-webserver-auto nil
-  "When nil, the function nikola-start-webserver uses `server` parameter, but \
-when set to t, uses the `auto` parameter."
+  "If set to t, it will use nikola auto to launch the webserver. If set to nil\
+, it will use nikola serve."
   :group 'nikola)
 
 (defcustom nikola-webserver-host "127.0.0.1"
-  "Default host to serve nikola's webpage."
+  "Set it to 0.0.0.0 if you want to make the webserver accesible from outside \
+the machine. "
   :group 'nikola)
 
 (defcustom nikola-webserver-port "8000"
-  "Default host to serve nikola's webpage."
+  "Nikola's webserver port."
   :group 'nikola)
 
 (defcustom nikola-webserver-open-browser-p nil
-  "If set to t, opens xdg defined browser."
+  "If set to t, opens xdg defined browser when executing `nikola-webserver-sta\
+rt`'."
   :group 'nikola)
 
 (defcustom nikola-deploy-input nil
-  "If nil, just execute plain deploy, if t, asks for user input, any string i\
-s passed to the deploy string."
-  :group 'nikola)
-
-(defcustom nikola-new-post-extension "html"
-  "Extension of new posts. It can be a string or a list. Default points to '.h\
-tml'"
-  :group 'nikola)
-
-(defcustom nikola-new-page-extension "html"
-  "Extension of new pages. It can be a string or a list. Default points to '.h\
-tml'"
+  "If nil, just execute plain deploy, if t, asks for user input, any string is\
+ passed to the deploy string automatically."
   :group 'nikola)
 
 (defcustom nikola-deploy-input-default "New post"
-  "Default commit message."
+  "If nikola-deploy-input is t, this variable changes the default value so you\
+ can just press RET."
+  :group 'nikola)
+
+(defcustom nikola-new-post-extension "html"
+  "The extension of new posts. If it's a list, ido completion will be offered."
+  :group 'nikola)
+
+(defcustom nikola-new-page-extension "html"
+  "The extension of new pages. If it's a list, ido completion will be offered."
   :group 'nikola)
 
 (defcustom nikola-build-before-hook-script nil
@@ -152,22 +156,22 @@ tml'"
   :group 'nikola)
 
 (defcustom nikola-build-before-hook nil
-  "Hook for before executing nikola-build."
+  "Hook executed before nikola-build."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-build-after-hook nil
-  "Hook for after executing nikola-build."
+  "Hook executed after nikola-build."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-deploy-before-hook nil
-  "Hook for before executing nikola-deploy."
+  "Hook executed before nikola-deploy."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-deploy-after-hook nil
-  "Hook for after executing nikola-deploy."
+  "Hook executed after nikola-deploy."
   :type 'hook
   :group 'nikola)
 
@@ -183,8 +187,107 @@ tml'"
      (string-match-p "nikola-webserver" (format "%s" process)))
     (message "Webserver stopped."))))
 
+(defun nikola-clean-slug (title)
+  "Clean the title to make the slug."
+  (setq slug (downcase title))
+  (setq slug (replace-regexp-in-string "\\(á\\|à\\|â\\|ä\\)" "a" slug))
+  (setq slug (replace-regexp-in-string "\\(é\\|è\\|ê\\|ë\\)" "e" slug))
+  (setq slug (replace-regexp-in-string "\\(í\\|ì\\|î\\|ï\\)" "i" slug))
+  (setq slug (replace-regexp-in-string "\\(ó\\|ò\\|ô\\|ö\\)" "o" slug))
+  (setq slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
+  (setq slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
+  (setq slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" "" slug))
+  (setq slug (replace-regexp-in-string
+	      "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
+  (setq slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
+  slug)
+
+(defun nikola-init ()
+  "Creates a default site and opens the file conf.py to edit it."
+  (interactive)
+  (async-start
+   `(lambda()
+      ,(async-inject-variables "\\(nikola-\\)")
+      (setq output (shell-command-to-string
+		    (concat "nikola init -q " nikola-output-root-directory)))
+      output)
+   (lambda (result)
+     (find-file (concat nikola-output-root-directory "conf.py"))
+     (if (search "This command needs to run inside an existing Nikola site."
+		 result)
+	 (if (eq nikola-verbose t)
+	     (message "Something went wrong. You may want to set nikola-verbos\
+e to t and retry it.")
+	   (message "Something went wrong. You may want to check the *Nikola* \
+buffer."))
+       (message "Site created correctly. Let's edit the configuration file!"))
+     (if (eq nikola-verbose t)
+	 (save-window-excursion
+	   (switch-to-buffer "*Nikola*")
+	   (kbd "C-u")(read-only-mode 0)
+	   (insert result)
+	   (kbd "C-u")(read-only-mode 1))))))
+
+(defun nikola-new-post()
+  "Creates a new post on nikola-output-root-directory/posts/ and opens it."
+  (interactive)
+  (setq title (read-string "Insert the title of the new post: "))
+  (setq slug (nikola-clean-slug title))
+  (if (listp nikola-new-post-extension)
+      (setq extension (concat "." (ido-completing-read "Which extension you wa\
+nt to use? " nikola-new-post-extension)))
+    (setq extension (concat "." nikola-new-post-extension)))
+  (setq slug (nikola-clean-slug title))
+  (catch 'nothing
+    (if (file-exists-p (concat nikola-output-root-directory "posts/" slug
+			       extension))
+	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
+	    (throw 'nothing "normal exit value")))
+    (with-temp-buffer
+      (insert (concat ".. title: " title "\n"))
+      (insert (concat ".. slug: " slug "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
+		      "\n"))
+      (insert ".. tags: \n")
+      (write-file (concat nikola-output-root-directory "posts/" slug ".meta")))
+    (with-temp-buffer
+      (insert "Write your publication here.")
+      (write-file (concat nikola-output-root-directory "posts/" slug
+			  extension)))
+    (find-file (concat nikola-output-root-directory "posts/" slug extension))))
+
+(defun nikola-new-page()
+  "Creates a new page on nikola-output-root-directory/stories/."
+  (interactive)
+  (setq title (read-string "Insert the title of the new page: "))
+  (setq slug (nikola-clean-slug title))
+  (if (listp nikola-new-post-extension)
+      (setq extension (concat "." (ido-completing-read "Which extension you wa\
+nt to use? " nikola-new-post-extension)))
+    (setq extension (concat "." nikola-new-post-extension)))
+  (setq slug (nikola-clean-slug title))
+  (catch 'nothing
+    (if (file-exists-p (concat nikola-output-root-directory "stories/" slug
+			       extension))
+	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
+	    (throw 'nothing "normal exit value")))
+    (with-temp-buffer
+      (insert (concat ".. title: " title "\n"))
+      (insert (concat ".. slug: " slug "\n"))
+      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
+		      "\n"))
+      (insert ".. tags: \n")
+      (write-file (concat nikola-output-root-directory "stories/" slug
+			  ".meta")))
+    (with-temp-buffer
+      (insert "Write your publication here.")
+      (write-file (concat nikola-output-root-directory "stories/" slug
+			  extension)))
+    (find-file (concat nikola-output-root-directory "stories/" slug
+		       extension))))
+
 (defun nikola-build ()
-  "Build the site with nikola build."
+  "Build the site."
   (interactive)
   (message "Building the site...")
   (async-start
@@ -220,7 +323,7 @@ buffer."))
 	   (kbd "C-u")(read-only-mode 1))))))
 
 (defun nikola-webserver-start ()
-  "Start nikola's webserver with the auto-building option."
+  "Start webserver."
   (interactive)
   (if (eq nikola-webserver-auto t)
       (setq webserver "auto")
@@ -256,7 +359,7 @@ ant to restart it?")
     (message "There's no Webserver running.")))
 
 (defun nikola-deploy ()
-  "Deploys the site using the default script."
+  "Deploys the site."
   (interactive)
   (if (eq nikola-deploy-input t)
       (progn
@@ -303,79 +406,6 @@ buffer."))
 	   (insert result)
 	   (kbd "C-u")(read-only-mode 1))))))
 
-(defun nikola-clean-slug (title)
-  "Clean the title to make the slug."
-  (setq slug (downcase title))
-  (setq slug (replace-regexp-in-string "\\(á\\|à\\|â\\|ä\\)" "a" slug))
-  (setq slug (replace-regexp-in-string "\\(é\\|è\\|ê\\|ë\\)" "e" slug))
-  (setq slug (replace-regexp-in-string "\\(í\\|ì\\|î\\|ï\\)" "i" slug))
-  (setq slug (replace-regexp-in-string "\\(ó\\|ò\\|ô\\|ö\\)" "o" slug))
-  (setq slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
-  (setq slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
-  (setq slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" "" slug))
-  (setq slug (replace-regexp-in-string
-	      "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
-  (setq slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
-  slug)
-
-(defun nikola-new-post()
-  "Creates a new post on nikola-output-root-directory."
-  (interactive)
-  (setq title (read-string "Insert the title of the new post: "))
-  (setq slug (nikola-clean-slug title))
-  (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you wa\
-nt to use? " nikola-new-post-extension)))
-    (setq extension (concat "." nikola-new-post-extension)))
-  (setq slug (nikola-clean-slug title))
-  (catch 'nothing
-    (if (file-exists-p (concat nikola-output-root-directory "posts/" slug
-			       extension))
-	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
-	    (throw 'nothing "normal exit value")))
-    (with-temp-buffer
-      (insert (concat ".. title: " title "\n"))
-      (insert (concat ".. slug: " slug "\n"))
-      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
-		      "\n"))
-      (insert ".. tags: \n")
-      (write-file (concat nikola-output-root-directory "posts/" slug ".meta")))
-    (with-temp-buffer
-      (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "posts/" slug
-			  extension)))
-    (find-file (concat nikola-output-root-directory "posts/" slug extension))))
-
-(defun nikola-new-page()
-  "Creates a new page on nikola-output-root-directory."
-  (interactive)
-  (setq title (read-string "Insert the title of the new page: "))
-  (setq slug (nikola-clean-slug title))
-  (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you wa\
-nt to use? " nikola-new-post-extension)))
-    (setq extension (concat "." nikola-new-post-extension)))
-  (setq slug (nikola-clean-slug title))
-  (catch 'nothing
-    (if (file-exists-p (concat nikola-output-root-directory "stories/" slug
-			       extension))
-	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
-	    (throw 'nothing "normal exit value")))
-    (with-temp-buffer
-      (insert (concat ".. title: " title "\n"))
-      (insert (concat ".. slug: " slug "\n"))
-      (insert (concat ".. date: " (format-time-string "%Y-%m-%d %H:%M:%S")
-		      "\n"))
-      (insert ".. tags: \n")
-      (write-file (concat nikola-output-root-directory "stories/" slug
-			  ".meta")))
-    (with-temp-buffer
-      (insert "Write your publication here.")
-      (write-file (concat nikola-output-root-directory "stories/" slug
-			  extension)))
-    (find-file (concat nikola-output-root-directory "stories/" slug
-		       extension))))
-
 (defun nikola-version ()
   "Shows nikola and nikola.el version."
   (interactive)
@@ -389,32 +419,8 @@ nt to use? " nikola-new-post-extension)))
 	 (setq nikola-version-v result)))
     (message nikola-version-v)))
 
-(defun nikola-init ()
-  (interactive)
-  (async-start
-   `(lambda()
-      ,(async-inject-variables "\\(nikola-\\)")
-      (setq output (shell-command-to-string (concat "nikola init -q " nikola-output-root-directory)))
-      output)
-   (lambda (result)
-     (find-file (concat nikola-output-root-directory "conf.py"))
-     (if (search "This command needs to run inside an existing Nikola site."
-		 result)
-	 (if (eq nikola-verbose t)
-	     (message "Something went wrong. You may want to set nikola-verbos\
-e to t and retry it.")
-	   (message "Something went wrong. You may want to check the *Nikola* \
-buffer."))
-       (message "Site created correctly. Let's edit the configuration file!"))
-     (if (eq nikola-verbose t)
-	 (save-window-excursion
-	   (switch-to-buffer "*Nikola*")
-	   (kbd "C-u")(read-only-mode 0)
-	   (insert result)
-	   (kbd "C-u")(read-only-mode 1))))))
-
-;; Since `nikola version` is so slow, get it's version async when loading this
-;; mode
+;; Since the shell command `nikola version` is so slow, get it's version async\
+;; when loading this mode
 (nikola-version)
 
 (provide 'nikola)
