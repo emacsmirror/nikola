@@ -107,7 +107,7 @@ For more complicated things, you should use create a function and add id a hook.
 **** Complete example
 #+BEGIN_SRC emacs-lisp
 (use-package nikola
-  :load-path "~/Proyectos/nikola.el/"
+  :load-path "~/.emacs.d/lisp/nikola.el/"
   :config
   (setq nikola-output-root-directory "~/Documents/blog/")
   (setq nikola-verbose t)

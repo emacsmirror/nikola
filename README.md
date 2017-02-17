@@ -158,7 +158,7 @@ For a more advanced configuration check the next chapter.
 4.  Complete example
 
         (use-package nikola
-          :load-path "~/Proyectos/nikola.el/"
+          :load-path "~/.emacs.d/lisp/nikola.el/"
           :config
           (setq nikola-output-root-directory "~/Documents/blog/")
           (setq nikola-verbose t)
