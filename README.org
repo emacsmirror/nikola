@@ -11,7 +11,7 @@ sudo pip3 install Nikola Nikola[extras]
 Also, emacs-async is necessary. you can install it from elpa with =M-x package-install RET async RET=.
 *** Install
 #+BEGIN_SRC bash
-git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
+git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
 #+END_SRC
 *** Configuration
 A minimal configuration would be this.

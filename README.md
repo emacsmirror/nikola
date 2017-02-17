@@ -55,7 +55,7 @@ Also, emacs-async is necessary. you can install it from elpa with `M-x package-i
 
 ### Install
 
-    git clone https://daemons.cf/cgit/nikola.el ~/.emacs.d/lisp/nikola.el
+    git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
 
 
 <a id="org1ed05ff"></a>
