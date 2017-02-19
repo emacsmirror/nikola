@@ -179,7 +179,7 @@ For a more advanced configuration check the next chapter.
           (setq nikola-deploy-input-default "New article")
           (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
           (setq nikola-build-after-hook-script (concat nikola-output-root-directory "scripts/post-build.sh"))
-          (setq nikola-deploy-after-hook-script (concat nikola-output-root-directory "nikola iarchiver")))
+          (setq nikola-deploy-after-hook-script "nikola iarchiver"))
 
 
 <a id="orge56f6e0"></a>
@@ -346,7 +346,7 @@ Para una configuración más avanzada hay que consultar la sección siguiente.
           (setq nikola-deploy-input-default "New post")
           (setq nikola-build-before-hook-script (concat nikola-output-directory-root "scripts/pre-build.sh"))
           (Setq nikola-build-after-hook-script (concat nikola-output-directory-root "scripts/post-build.sh"))
-          (setq nikola-deploy-after-hook-script (concat nikola-output-directory-root "nikola iarchiver")))
+          (setq nikola-deploy-after-hook-script "nikola iarchiver"))
 
 5.  Licencia
 

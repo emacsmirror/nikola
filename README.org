@@ -119,7 +119,7 @@ For more complicated things, you should use create a function and add id a hook.
   (setq nikola-deploy-input-default "New article")
   (setq nikola-build-before-hook-script (concat nikola-output-root-directory "scripts/pre-build.sh"))
   (setq nikola-build-after-hook-script (concat nikola-output-root-directory "scripts/post-build.sh"))
-  (setq nikola-deploy-after-hook-script (concat nikola-output-root-directory "nikola iarchiver")))
+  (setq nikola-deploy-after-hook-script "nikola iarchiver"))
 #+END_SRC
 
 *** License
@@ -257,7 +257,7 @@ Si sólo desea ejecutar un script o comando simple antes o después de crear o d
   (setq nikola-deploy-input-default "New post")
   (setq nikola-build-before-hook-script (concat nikola-output-directory-root "scripts/pre-build.sh"))
   (Setq nikola-build-after-hook-script (concat nikola-output-directory-root "scripts/post-build.sh"))
-  (setq nikola-deploy-after-hook-script (concat nikola-output-directory-root "nikola iarchiver")))
+  (setq nikola-deploy-after-hook-script "nikola iarchiver"))
 #+END_SRC
 
 **** Licencia
