@@ -203,7 +203,7 @@ rt`'."
   slug)
 
 (defun nikola-init ()
-  "Creates a default site and opens the file conf.py to edit it."
+  "Create a default site and opens the file conf.py to edit it."
   (interactive)
   (async-start
    `(lambda()
@@ -241,8 +241,8 @@ nt to use? " nikola-new-post-extension)))
   (catch 'nothing
     (if (file-exists-p (concat nikola-output-root-directory "posts/" slug
 			       extension))
-	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
-	    (throw 'nothing "normal exit value")))
+	(if (not (y-or-n-p "This post exists.  You want to overwrite it? "))
+	    (user-error "Exit.? ")))
     (with-temp-buffer
       (insert (concat ".. title: " title "\n"))
       (insert (concat ".. slug: " slug "\n"))
@@ -269,8 +269,8 @@ nt to use? " nikola-new-post-extension)))
   (catch 'nothing
     (if (file-exists-p (concat nikola-output-root-directory "stories/" slug
 			       extension))
-	(if (not (y-or-n-p "This post exists. You want to overwrite it? "))
-	    (throw 'nothing "normal exit value")))
+	(if (not (y-or-n-p "This post exists.  You want to overwrite it? "))
+	    (user-error "Exit")))
     (with-temp-buffer
       (insert (concat ".. title: " title "\n"))
       (insert (concat ".. slug: " slug "\n"))
@@ -407,7 +407,7 @@ buffer."))
 	   (kbd "C-u")(read-only-mode 1))))))
 
 (defun nikola-version ()
-  "Shows nikola and nikola.el version."
+  "Show nikola and nikola.el version."
   (interactive)
   (if (eq nikola-version-p nil)
       (async-start
