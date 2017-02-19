@@ -2,7 +2,9 @@
 * nikola.el
 ** English
 *** About
-This is a simple wrapper around [[http://getnikola.com][nikola]]. Right now, it allows you to create a site, build, deploy, start/stop the webserver and execute hooks.
+Nikola is a static site generator. If you don't know what it is, you should probable learn about it on [[https://getnikola.com][their site]] and then come back here. Nikola.el is a simple wrapper around nikola. Right now, it allows you to create a site, create posts and pages, build, deploy, start/stop the webserver and execute hooks.
+
+As said, it supports creating posts, but I recommend the awesome package [[https://github.com/redguardtoo/org2nikola][org2nikola]].
 *** Requirements
 The extras package is recommended but not necessary.
 #+BEGIN_SRC bash
@@ -144,7 +146,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [[https://git.daemons.cfr/drymer/nikola.el/][https://git.daemons.cfr/drymer/nikola.el/]]
 ** Castellano
 *** Acerca de
-Este paquete es un frontend simple alrededor de [[https://getnikola.com][nikola]]. En este momento, permite crear un sitio web, construirlo, desplegarlo, iniciar/detener el servidor web y ejecutar ganchos (hooks).
+Nikola es un generador de páginas web estáticas. Si no sabes que es, probablemente deberías aprender sobre ello en [[https://getnikola.com][su página web]] y luego volver aquí. Este paquete es un frontend simple alrededor de nikola. En este momento, permite crear un sitio web, crear articulos y páginas, construirlo, desplegarlo, iniciar/detener el servidor web y ejecutar ganchos (hooks).
+
+Como se ha dicho, soporta la creación de articulos, pero recomiendo el fantástico paquete [[https://github.com/redguardtoo/org2nikola][org2nikola]].
 *** Requisitos
 Es recomendable instalar el paquete de extras, pero no es necesario.
 

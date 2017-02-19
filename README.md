@@ -46,8 +46,9 @@
 
 ### About
 
-This is a simple wrapper around [nikola](http://getnikola.com). Right now, it allows you to create a site, build, deploy, start/stop the webserver and execute hooks.
+Nikola is a static site generator. If you don't know what it is, you should probable learn about it on [their site](https://getnikola.com) and then come back here. Nikola.el is a simple wrapper around nikola. Right now, it allows you to create a site, create posts and pages, build, deploy, start/stop the webserver and execute hooks.
 
+As said, it supports creating posts, but I recommend the awesome package [org2nikola](https://github.com/redguardtoo/org2nikola).
 
 <a id="org46a6fa6"></a>
 
@@ -219,7 +220,9 @@ If you find a bug, have a patch or have a feature request, you may send an e-mai
 
 ### Acerca de
 
-Este paquete es un frontend simple alrededor de [nikola](https://getnikola.com). En este momento, permite crear un sitio web, construirlo, desplegarlo, iniciar/detener el servidor web y ejecutar ganchos (hooks).
+Nikola es un generador de páginas web estáticas. Si no sabes que es, probablemente deberías aprender sobre ello en [su página web](https://getnikola.com) y luego volver aquí. Este paquete es un frontend simple alrededor de nikola. En este momento, permite crear un sitio web, crear articulos y páginas, construirlo, desplegarlo, iniciar/detener el servidor web y ejecutar ganchos (hooks).
+
+Como se ha dicho, soporta la creación de articulos, pero recomiendo el fantástico paquete [org2nikola](https://github.com/redguardtoo/org2nikola).
 
 
 <a id="org3cb3be4"></a>
