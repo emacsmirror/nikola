@@ -25,22 +25,22 @@
 ;; ◊ Variables:
 ;;   • `nikola-output-root-directory': Nikola's site directory.
 ;;   • `nikola-verbose': If set to *t*, it will create a buffer called
-;;     **Nikola** with the output of all commands. Set to *nil* by default.
+;;     **Nikola** with the output of all commands.  Set to *nil* by default.
 ;;   • `nikola-webserver-auto': If set to *t*, it will use `nikola auto' to
-;;     launch the webserver. If set to *nil*, it will use `nikola
-;;     serve'. Set to *nil* by default.
+;;     launch the webserver.  If set to *nil*, it will use `nikola
+;;     serve'.  Set to *nil* by default.
 ;;   • `nikola-webserver-host': Set it to *0.0.0.0* if you want to make the
-;;     webserver accesible from outside the machine. Set to *127.0.0.1* by
+;;     webserver accesible from outside the machine.  Set to *127.0.0.1* by
 ;;     default.
-;;   • `nikola-webserver-port': Nikola's webserver port. Set to *8000* by
+;;   • `nikola-webserver-port': Nikola's webserver port.  Set to *8000* by
 ;;     default.
 ;;   • `nikola-deploy-input': If *nil*, just execute plain deploy, if *t*,
 ;;     asks for user input, *any string* is passed to the deploy string
 ;;     automatically.
 ;;     This variable is intended to use with a deploy script or command that
-;;     uses git, thus needs a commit message. It could be used for whatever
-;;     other reason, also. To use the message writed on emacs on the deploy
-;;     order, you have to use the variable **$COMMIT**. For example, your
+;;     uses git, thus needs a commit message.  It could be used for whatever
+;;     other reason, also.  To use the message writed on Emacs on the deploy
+;;     order, you have to use the variable **$COMMIT**.  For example, your
 ;;     deploy command could be:
 ;;   ┌────
 ;;   │ DEPLOY_COMMANDS = {
@@ -85,8 +85,8 @@
   :group 'tools)
 
 (defcustom nikola-command "nikola"
-  "The nikola command (no shit, Sherlock). It shouldn't be necessary to change\
- it if it's on the PATH."
+  "The nikola command (no shit, Sherlock).  It shouldn't be necessary to change\
+it if it's on the PATH."
   :group 'nikola)
 
 (defcustom nikola-output-root-directory nil
@@ -99,13 +99,13 @@ ll commands."
   :group 'nikola)
 
 (defcustom nikola-webserver-auto nil
-  "If set to t, it will use nikola auto to launch the webserver. If set to nil\
+  "If set to t, it will use nikola auto to launch the webserver.  If set to nil\
 , it will use nikola serve."
   :group 'nikola)
 
 (defcustom nikola-webserver-host "127.0.0.1"
   "Set it to 0.0.0.0 if you want to make the webserver accesible from outside \
-the machine. "
+the machine."
   :group 'nikola)
 
 (defcustom nikola-webserver-port "8000"
@@ -119,20 +119,22 @@ rt`'."
 
 (defcustom nikola-deploy-input nil
   "If nil, just execute plain deploy, if t, asks for user input, any string is\
- passed to the deploy string automatically."
+passed to the deploy string automatically."
   :group 'nikola)
 
 (defcustom nikola-deploy-input-default "New post"
-  "If nikola-deploy-input is t, this variable changes the default value so you\
- can just press RET."
+  "If `nikola-deploy-input' is t, this variable changes the default value so y\
+can just press RET."
   :group 'nikola)
 
 (defcustom nikola-new-post-extension "html"
-  "The extension of new posts. If it's a list, ido completion will be offered."
+  "The extension of new posts.  If it's a list, ido completion will be offered\
+."
   :group 'nikola)
 
 (defcustom nikola-new-page-extension "html"
-  "The extension of new pages. If it's a list, ido completion will be offered."
+  "The extension of new pages.  If it's a list, ido completion will be offered\
+."
   :group 'nikola)
 
 (defcustom nikola-build-before-hook-script nil
@@ -156,27 +158,27 @@ rt`'."
   :group 'nikola)
 
 (defcustom nikola-build-before-hook nil
-  "Hook executed before nikola-build."
+  "Hook executed before `nikola-build'."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-build-after-hook nil
-  "Hook executed after nikola-build."
+  "Hook executed after `nikola-build'."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-deploy-before-hook nil
-  "Hook executed before nikola-deploy."
+  "Hook executed before `nikola-deploy'."
   :type 'hook
   :group 'nikola)
 
 (defcustom nikola-deploy-after-hook nil
-  "Hook executed after nikola-deploy."
+  "Hook executed after `nikola-deploy'."
   :type 'hook
   :group 'nikola)
 
-(defvar nikola-version-p nil
-  "Do not modify this variable.")
+(defvar nikola-version-v nil
+  "Nikola version.  Do not modify manually.")
 
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
@@ -188,29 +190,36 @@ rt`'."
     (message "Webserver stopped."))))
 
 (defun nikola-clean-slug (title)
-  "Clean the title to make the slug."
-  (setq slug (downcase title))
-  (setq slug (replace-regexp-in-string "\\(á\\|à\\|â\\|ä\\)" "a" slug))
-  (setq slug (replace-regexp-in-string "\\(é\\|è\\|ê\\|ë\\)" "e" slug))
-  (setq slug (replace-regexp-in-string "\\(í\\|ì\\|î\\|ï\\)" "i" slug))
-  (setq slug (replace-regexp-in-string "\\(ó\\|ò\\|ô\\|ö\\)" "o" slug))
-  (setq slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
-  (setq slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
-  (setq slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" "" slug))
-  (setq slug (replace-regexp-in-string
-	      "\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
-  (setq slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
-  slug)
+  "Clean the TITLE to make the slug."
+  (let* ((slug (downcase title))
+	 (slug (replace-regexp-in-string "\\(á\\|à\\|â\\|ä\\)" "a" slug))
+	 (slug (replace-regexp-in-string "\\(é\\|è\\|ê\\|ë\\)" "e" slug))
+	 (slug (replace-regexp-in-string "\\(í\\|ì\\|î\\|ï\\)" "i" slug))
+	 (slug (replace-regexp-in-string "\\(ó\\|ò\\|ô\\|ö\\)" "o" slug))
+	 (slug (replace-regexp-in-string "\\(ú\\|ù\\|û\\|ü\\)" "u" slug))
+	 (slug (replace-regexp-in-string "\\(,\\|\\.\\|\'\\|\"\\)" "" slug))
+	 (slug (replace-regexp-in-string "\\(\\?\\|\\¿\\|\\!\\|\\¡\\)" ""
+					 slug))
+	 (slug (replace-regexp-in-string
+		"\\(+\\|\\^\\|@\\|\\[\\|\\]\\|\{\\|\}\\|\\\\\\)" "" slug))
+	 (slug (replace-regexp-in-string "\\( \\|_\\)" "-" slug))
+	 (slug (replace-regexp-in-string "\\(--\\)" "-" slug))
+	 (slug (replace-regexp-in-string "\\(--\\)" "-" slug)))
+    slug))
 
 (defun nikola-init ()
   "Create a default site and opens the file conf.py to edit it."
   (interactive)
+  (message "Creating the site...")
+  (if (file-exists-p (concat nikola-output-root-directory "conf.py"))
+      (user-error "There's a site on that directory.  Delete it or change the \
+nikola-output-root-directory variable.  "))
   (async-start
    `(lambda()
       ,(async-inject-variables "\\(nikola-\\)")
-      (setq output (shell-command-to-string
-		    (concat "nikola init -q " nikola-output-root-directory)))
-      output)
+      (let ((output (shell-command-to-string
+		    (concat "nikola init -q " nikola-output-root-directory))))
+	output))
    (lambda (result)
      (find-file (concat nikola-output-root-directory "conf.py"))
      (if (search "This command needs to run inside an existing Nikola site."
@@ -231,14 +240,12 @@ buffer."))
 (defun nikola-new-post()
   "Creates a new post on nikola-output-root-directory/posts/ and opens it."
   (interactive)
-  (setq title (read-string "Insert the title of the new post: "))
-  (setq slug (nikola-clean-slug title))
-  (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you wa\
-nt to use? " nikola-new-post-extension)))
-    (setq extension (concat "." nikola-new-post-extension)))
-  (setq slug (nikola-clean-slug title))
-  (catch 'nothing
+  (let* ((title (read-string "Insert the title of the new post: "))
+	(slug (nikola-clean-slug title))
+	(extension (if (listp nikola-new-post-extension)
+		       (concat "." (ido-completing-read "Which extension you w\
+ant to use? " nikola-new-post-extension))
+		     (concat "." nikola-new-post-extension))))
     (if (file-exists-p (concat nikola-output-root-directory "posts/" slug
 			       extension))
 	(if (not (y-or-n-p "This post exists.  You want to overwrite it? "))
@@ -254,19 +261,19 @@ nt to use? " nikola-new-post-extension)))
       (insert "Write your publication here.")
       (write-file (concat nikola-output-root-directory "posts/" slug
 			  extension)))
-    (find-file (concat nikola-output-root-directory "posts/" slug extension))))
+    (find-file (concat nikola-output-root-directory "posts/" slug extension))
+    (message "Write your publication.")))
 
 (defun nikola-new-page()
   "Creates a new page on nikola-output-root-directory/stories/."
   (interactive)
-  (setq title (read-string "Insert the title of the new page: "))
-  (setq slug (nikola-clean-slug title))
-  (if (listp nikola-new-post-extension)
-      (setq extension (concat "." (ido-completing-read "Which extension you wa\
-nt to use? " nikola-new-post-extension)))
-    (setq extension (concat "." nikola-new-post-extension)))
-  (setq slug (nikola-clean-slug title))
-  (catch 'nothing
+  (let* ((title (read-string "Insert the title of the new page: "))
+	 (slug (nikola-clean-slug title))
+	 (extension
+	  (if (listp nikola-new-post-extension)
+	      (concat "." (ido-completing-read "Which extension you want to us\
+e? " nikola-new-post-extension))
+	   (concat "." nikola-new-post-extension))))
     (if (file-exists-p (concat nikola-output-root-directory "stories/" slug
 			       extension))
 	(if (not (y-or-n-p "This post exists.  You want to overwrite it? "))
@@ -283,8 +290,8 @@ nt to use? " nikola-new-post-extension)))
       (insert "Write your publication here.")
       (write-file (concat nikola-output-root-directory "stories/" slug
 			  extension)))
-    (find-file (concat nikola-output-root-directory "stories/" slug
-		       extension))))
+    (find-file (concat nikola-output-root-directory "stories/" slug extension))
+    (message "Write your publication.")))
 
 (defun nikola-build ()
   "Build the site."
@@ -293,9 +300,9 @@ nt to use? " nikola-new-post-extension)))
   (async-start
    `(lambda()
       ,(async-inject-variables "\\(nikola-\\)")
-      (let ((default-directory nikola-output-root-directory))
+      (let ((default-directory nikola-output-root-directory)
+	    (output))
 	(run-hook-with-args 'nikola-build-before-hook "")
-	(setq output nil)
 	(if (not (eq nikola-build-before-hook-script nil))
 	    (setq output (shell-command-to-string
 			  nikola-build-before-hook-script)))
@@ -304,8 +311,8 @@ nt to use? " nikola-new-post-extension)))
 	(if (not (eq nikola-build-after-hook-script nil))
 	    (setq output (concat output (shell-command-to-string
 					 nikola-build-after-hook-script))))
-	(run-hook-with-args 'nikola-build-after-hook ""))
-      output)
+	(run-hook-with-args 'nikola-build-after-hook "")
+      output))
    (lambda (result)
      (if (search "This command needs to run inside an existing Nikola site."
 		 result)
@@ -325,31 +332,34 @@ buffer."))
 (defun nikola-webserver-start ()
   "Start webserver."
   (interactive)
-  (if (eq nikola-webserver-auto t)
-      (setq webserver "auto")
-    (setq webserver "serve"))
-  (if (eq nikola-webserver-open-browser-p t)
-      (setq browser " -b")
-    (setq browser ""))
-  (if (get-process "nikola-webserver")
-      (if (y-or-n-p "There's a nikola-start-webserver process active. Do you w\
-ant to restart it?")
-	  (progn (nikola-webserver-stop)(sleep-for 1))
-	(user-error "Exit")))
-  (message (concat "Serving Webserver on " nikola-webserver-host
-		   nikola-webserver-port "... " "(it can take a while):"))
-  (if (eq nikola-verbose t)
-      (setq buffer-name-p "*Nikola*")
-    (setq buffer-name-p nil))
-  (let ((default-directory nikola-output-root-directory))
-    (set-process-sentinel
-     (start-process-shell-command
-      "nikola-webserver" buffer-name-p (concat "NIKOLA_MONO=1 " nikola-command
-					       " " webserver " -a "
-					       nikola-webserver-host
-					       " -p " nikola-webserver-port
-					       browser))
-     'nikola-sentinel)))
+  (let ((webserver)
+	(browser)
+	(buffer-name-p))
+    (if (eq nikola-webserver-auto t)
+	(setq webserver "auto")
+      (setq webserver "serve"))
+    (if (eq nikola-webserver-open-browser-p t)
+	(setq browser " -b")
+      (setq browser ""))
+    (if (get-process "nikola-webserver")
+	(if (y-or-n-p "There's a nikola-start-webserver process active.  Do yo\
+u want to restart it? ")
+	    (progn (nikola-webserver-stop)(sleep-for 1))
+	  (user-error "Exit")))
+    (message (concat "Serving Webserver on " nikola-webserver-host
+		     nikola-webserver-port "... " "(it can take a while):"))
+    (if (eq nikola-verbose t)
+	(setq buffer-name-p "*Nikola*")
+      (setq buffer-name-p nil))
+    (let ((default-directory nikola-output-root-directory))
+      (set-process-sentinel
+       (start-process-shell-command
+	"nikola-webserver" buffer-name-p (concat "NIKOLA_MONO=1 "
+						 nikola-command " " webserver
+						 " -a " nikola-webserver-host
+						 " -p " nikola-webserver-port
+						 browser))
+       'nikola-sentinel))))
 
 (defun nikola-webserver-stop ()
   "Stops the webserver."
@@ -361,63 +371,65 @@ ant to restart it?")
 (defun nikola-deploy ()
   "Deploys the site."
   (interactive)
-  (if (eq nikola-deploy-input t)
-      (progn
-	(setq nikola-commit
-	      (read-string
-	       (concat "Enter the commit message (Default: "
-		       nikola-deploy-input-default "): ")))
-	(if (string="" nikola-commit)
-	    (setq nikola-commit nikola-deploy-input-default)))
-    (if (eq nikola-deploy-input nil)
-	(setq nikola-commit nil)
-      (setq nikola-commit nikola-deploy-input)))
-  (message "Deploying the site...")
-  (async-start
-   `(lambda ()
-      ,(async-inject-variables "\\(nikola-\\)")
-      (setq output nil)
-      (let ((default-directory nikola-output-root-directory))
-	(run-hook-with-args 'nikola-deploy-before-hook "")
-	(if (not (eq nikola-deploy-before-hook-script nil))
-	    (setq output (shell-command-to-string
-			  nikola-deploy-before-hook-script)))
-	(setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit
-						      "\" " nikola-command
-						      " deploy ")))
-	(if (not (eq nikola-deploy-after-hook-script nil))
-	    (setq output (shell-command-to-string
-			  nikola-deploy-after-hook-script)))
-	(run-hook-with-args 'nikola-deploy-before-hook ""))
+  (let ((nikola-commit)
+	(output))
+    (if (eq nikola-deploy-input t)
+	(progn
+	  (setq nikola-commit (read-string
+			       (concat "Enter the commit message (Default: "
+				       nikola-deploy-input-default "): ")))
+	  (if (string="" nikola-commit)
+	      (setq nikola-commit nikola-deploy-input-default)))
+      (if (eq nikola-deploy-input nil)
+	  (setq nikola-commit nil)
+	(setq nikola-commit nikola-deploy-input)))
+    (message "Deploying the site...")
+    (async-start
+     `(lambda ()
+	,(async-inject-variables "\\(nikola-\\)")
+	(setq output nil)
+	(let ((default-directory nikola-output-root-directory))
+	  (run-hook-with-args 'nikola-deploy-before-hook "")
+	  (if (not (eq nikola-deploy-before-hook-script nil))
+	      (setq output (shell-command-to-string
+			    nikola-deploy-before-hook-script)))
+	  (setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit
+							"\" " nikola-command
+							" deploy ")))
+	  (if (not (eq nikola-deploy-after-hook-script nil))
+	      (setq output (shell-command-to-string
+			    nikola-deploy-after-hook-script)))
+	  (run-hook-with-args 'nikola-deploy-before-hook ""))
 	output)
-   (lambda (result)
-     (if (search "This command needs to run inside an existing Nikola site."
-		 result)
-	 (if (eq nikola-verbose t)
-	     (message "Something went wrong. You may want to set nikola-verbos\
+     (lambda (result)
+       (if (search "This command needs to run inside an existing Nikola site."
+		   result)
+	   (if (eq nikola-verbose t)
+	       (message "Something went wrong. You may want to set nikola-verbos\
 e to t and retry it.")
-	   (message "Something went wrong. You may want to check the *Nikola* \
+	     (message "Something went wrong. You may want to check the *Nikola* \
 buffer."))
-       (message "Site deployed correctly."))
-     (if (eq nikola-verbose t)
-	 (save-window-excursion
-	   (switch-to-buffer "*Nikola*")
-	   (kbd "C-u")(read-only-mode 0)
-	   (insert result)
-	   (kbd "C-u")(read-only-mode 1))))))
+	 (message "Site deployed correctly."))
+       (if (eq nikola-verbose t)
+	   (save-window-excursion
+	     (switch-to-buffer "*Nikola*")
+	     (kbd "C-u")(read-only-mode 0)
+	     (insert result)
+	     (kbd "C-u")(read-only-mode 1)))))))
 
 (defun nikola-version ()
   "Show nikola and nikola.el version."
   (interactive)
-  (if (eq nikola-version-p nil)
-      (async-start
-       `(lambda()
-	  (setq output (shell-command-to-string "nikola version"))
-	  (setq output (concat output "Nikola.el v0.1"))
-	  output)
-       (lambda (result)
-	 (setq nikola-version-v result)))
-    (message nikola-version-v)))
+  (let ((output))
+    (if (eq nikola-version-v nil)
+	(async-start
+	 `(lambda()
+	    (setq output (shell-command-to-string "nikola version"))
+	    (setq output (concat output "Nikola.el v0.1"))
+	    output)
+	 (lambda (result)
+	   (setq nikola-version-v result)))
+      (message nikola-version-v))))
 
 ;; Since the shell command `nikola version` is so slow, get it's version async\
 ;; when loading this mode
