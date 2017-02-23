@@ -1,6 +1,14 @@
 ;;; nikola.el --- Simple wrapper for nikola
-;; Author:: drymer <drymer [ EN ] autistici.org>
-;; Copyright:: Copyright (c) 2016, drymer
+
+;; Copyright:: Copyright (c) 2017, drymer
+
+;; Author:: drymer <drymer [ AT ] autistici.org>
+;; Package-Requires: ((async "1.5") (emacs "24.3"))
+;; Version: 0.1
+
+;; Keywords:: nikola
+;; X-URL:: https://git.daemons.cf/drymer/nikola.el
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 2 of the License, or (at
@@ -11,6 +19,7 @@
 ;; General Public License for more details.
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ;;; Commentary:
 ;; If you find a bug, you may send an e-mail or open an issue at
 ;; https://git.daemons.cf/drymer/nikola.el/
@@ -76,8 +85,8 @@
 ;;   └────
 ;;   For more complicated things, you should use create a function and add
 ;;   is a hook.
-;;; Code:
 
+;;; Code:
 (require 'async)
 
 (defgroup nikola nil
@@ -85,8 +94,8 @@
   :group 'tools)
 
 (defcustom nikola-command "nikola"
-  "The nikola command (no shit, Sherlock).  It shouldn't be necessary to change\
-it if it's on the PATH."
+  "The nikola command (no shit, Sherlock).  It shouldn't be necessary to chang\
+e it if it's on the PATH."
   :group 'nikola)
 
 (defcustom nikola-output-root-directory nil
@@ -99,8 +108,8 @@ ll commands."
   :group 'nikola)
 
 (defcustom nikola-webserver-auto nil
-  "If set to t, it will use nikola auto to launch the webserver.  If set to nil\
-, it will use nikola serve."
+  "If set to t, it will use nikola auto to launch the webserver.  If set to ni\
+l, it will use nikola serve."
   :group 'nikola)
 
 (defcustom nikola-webserver-host "127.0.0.1"
@@ -393,8 +402,9 @@ u want to restart it? ")
 	  (if (not (eq nikola-deploy-before-hook-script nil))
 	      (setq output (shell-command-to-string
 			    nikola-deploy-before-hook-script)))
-	  (setq output (shell-command-to-string (concat "COMMIT=\"" nikola-commit
-							"\" " nikola-command
+	  (setq output (shell-command-to-string (concat "COMMIT=\""
+							nikola-commit "\" "
+							nikola-command
 							" deploy ")))
 	  (if (not (eq nikola-deploy-after-hook-script nil))
 	      (setq output (shell-command-to-string
@@ -405,9 +415,9 @@ u want to restart it? ")
        (if (search "This command needs to run inside an existing Nikola site."
 		   result)
 	   (if (eq nikola-verbose t)
-	       (message "Something went wrong. You may want to set nikola-verbos\
-e to t and retry it.")
-	     (message "Something went wrong. You may want to check the *Nikola* \
+	       (message "Something went wrong. You may want to set nikola-verbo\
+se to t and retry it.")
+	     (message "Something went wrong. You may want to check the *Nikola*\
 buffer."))
 	 (message "Site deployed correctly."))
        (if (eq nikola-verbose t)
@@ -431,7 +441,7 @@ buffer."))
 	   (setq nikola-version-v result)))
       (message nikola-version-v))))
 
-;; Since the shell command `nikola version` is so slow, get it's version async\
+;; Since the shell command `nikola version` is so slow, get it's version async
 ;; when loading this mode
 (nikola-version)
 
