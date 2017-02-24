@@ -88,6 +88,7 @@
 
 ;;; Code:
 (require 'async)
+(require 'cl-lib)
 
 (defgroup nikola nil
   "Wrappers around nikola command."
@@ -96,54 +97,65 @@
 (defcustom nikola-command "nikola"
   "The nikola command (no shit, Sherlock).  It shouldn't be necessary to chang\
 e it if it's on the PATH."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-output-root-directory nil
   "Nikola's default directory."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-verbose nil
   "If set to t, it will create a buffer called *Nikola* with the output of a\
 ll commands."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-webserver-auto nil
   "If set to t, it will use nikola auto to launch the webserver.  If set to ni\
 l, it will use nikola serve."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-webserver-host "127.0.0.1"
   "Set it to 0.0.0.0 if you want to make the webserver accesible from outside \
 the machine."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-webserver-port "8000"
   "Nikola's webserver port."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-webserver-open-browser-p nil
   "If set to t, opens xdg defined browser when executing `nikola-webserver-sta\
 rt`'."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-deploy-input nil
   "If nil, just execute plain deploy, if t, asks for user input, any string is\
 passed to the deploy string automatically."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-deploy-input-default "New post"
-  "If `nikola-deploy-input' is t, this variable changes the default value so y\
+  "If `nikola-deploy-input' is t, this 'variable changes the default value so y\
 can just press RET."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-new-post-extension "html"
   "The extension of new posts.  If it's a list, ido completion will be offered\
 ."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-new-page-extension "html"
   "The extension of new pages.  If it's a list, ido completion will be offered\
 ."
+  :type 'variable
   :group 'nikola)
 
 (defcustom nikola-build-before-hook-script nil
@@ -187,7 +199,8 @@ can just press RET."
   :group 'nikola)
 
 (defvar nikola-version-v nil
-  "Nikola version.  Do not modify manually.")
+  "Nikola version.  Do not modify manually."
+  :type 'variable)
 
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
@@ -216,6 +229,7 @@ can just press RET."
 	 (slug (replace-regexp-in-string "\\(--\\)" "-" slug)))
     slug))
 
+;;;###autoload
 (defun nikola-init ()
   "Create a default site and opens the file conf.py to edit it."
   (interactive)
@@ -231,7 +245,7 @@ nikola-output-root-directory variable.  "))
 	output))
    (lambda (result)
      (find-file (concat nikola-output-root-directory "conf.py"))
-     (if (search "This command needs to run inside an existing Nikola site."
+     (if (cl-search "This command needs to run inside an existing Nikola site."
 		 result)
 	 (if (eq nikola-verbose t)
 	     (message "Something went wrong. You may want to set nikola-verbos\
@@ -246,6 +260,7 @@ buffer."))
 	   (insert result)
 	   (kbd "C-u")(read-only-mode 1))))))
 
+;;;###autoload
 (defun nikola-new-post()
   "Creates a new post on nikola-output-root-directory/posts/ and opens it."
   (interactive)
@@ -273,6 +288,7 @@ ant to use? " nikola-new-post-extension))
     (find-file (concat nikola-output-root-directory "posts/" slug extension))
     (message "Write your publication.")))
 
+;;;###autoload
 (defun nikola-new-page()
   "Creates a new page on nikola-output-root-directory/stories/."
   (interactive)
@@ -302,6 +318,7 @@ e? " nikola-new-post-extension))
     (find-file (concat nikola-output-root-directory "stories/" slug extension))
     (message "Write your publication.")))
 
+;;;###autoload
 (defun nikola-build ()
   "Build the site."
   (interactive)
@@ -323,7 +340,7 @@ e? " nikola-new-post-extension))
 	(run-hook-with-args 'nikola-build-after-hook "")
       output))
    (lambda (result)
-     (if (search "This command needs to run inside an existing Nikola site."
+     (if (cl-search "This command needs to run inside an existing Nikola site."
 		 result)
 	 (if (eq nikola-verbose t)
 	     (message "Something went wrong. You may want to set nikola-verbos\
@@ -338,6 +355,7 @@ buffer."))
 	   (insert result)
 	   (kbd "C-u")(read-only-mode 1))))))
 
+;;;###autoload
 (defun nikola-webserver-start ()
   "Start webserver."
   (interactive)
@@ -370,6 +388,7 @@ u want to restart it? ")
 						 browser))
        'nikola-sentinel))))
 
+;;;###autoload
 (defun nikola-webserver-stop ()
   "Stops the webserver."
   (interactive)
@@ -377,6 +396,7 @@ u want to restart it? ")
       (signal-process "nikola-webserver" 1)
     (message "There's no Webserver running.")))
 
+;;;###autoload
 (defun nikola-deploy ()
   "Deploys the site."
   (interactive)
@@ -412,7 +432,7 @@ u want to restart it? ")
 	  (run-hook-with-args 'nikola-deploy-before-hook ""))
 	output)
      (lambda (result)
-       (if (search "This command needs to run inside an existing Nikola site."
+       (if (cl-search "This command needs to run inside an existing Nikola site."
 		   result)
 	   (if (eq nikola-verbose t)
 	       (message "Something went wrong. You may want to set nikola-verbo\
@@ -427,6 +447,7 @@ buffer."))
 	     (insert result)
 	     (kbd "C-u")(read-only-mode 1)))))))
 
+;;;###autoload
 (defun nikola-version ()
   "Show nikola and nikola.el version."
   (interactive)
