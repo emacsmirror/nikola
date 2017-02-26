@@ -443,9 +443,8 @@ buffer."))
        (if (eq nikola-verbose t)
 	   (save-window-excursion
 	     (switch-to-buffer "*Nikola*")
-	     (kbd "C-u")(read-only-mode 0)
-	     (insert result)
-	     (kbd "C-u")(read-only-mode 1)))))))
+	     (let ((inhibit-read-only t))
+	       (insert result))))))))
 
 ;;;###autoload
 (defun nikola-version ()
@@ -462,7 +461,7 @@ buffer."))
 	   (setq nikola-version-v result)))
       (message nikola-version-v))))
 
-;; Since the shell command `nikola version` is so slow, get it's version async
+;; Since the shell command `nikola version` is so slow, get its version async
 ;; when loading this mode
 (nikola-version)
 
