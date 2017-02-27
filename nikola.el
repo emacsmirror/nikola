@@ -1,4 +1,4 @@
-;;; nikola.el --- Simple wrapper for nikola
+;;; nikola.el --- Simple wrapper for nikola -*- lexical-binding: t -*-
 
 ;; Copyright:: Copyright (c) 2017, drymer
 
@@ -199,8 +199,7 @@ can just press RET."
   :group 'nikola)
 
 (defvar nikola-version-v nil
-  "Nikola version.  Do not modify manually."
-  :type 'variable)
+  "Nikola version.  Do not modify manually.")
 
 (defun nikola-sentinel (process event)
   "React to nikola's PROCESS and EVENTs."
