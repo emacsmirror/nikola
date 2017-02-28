@@ -255,9 +255,9 @@ buffer."))
      (if (eq nikola-verbose t)
 	 (save-window-excursion
 	   (switch-to-buffer "*Nikola*")
-	   (kbd "C-u")(read-only-mode 0)
-	   (insert result)
-	   (kbd "C-u")(read-only-mode 1))))))
+	   (let ((inhibit-read-only t))
+	     (insert result)))))))
+
 
 ;;;###autoload
 (defun nikola-new-post()
@@ -350,9 +350,8 @@ buffer."))
      (if (eq nikola-verbose t)
 	 (save-window-excursion
 	   (switch-to-buffer "*Nikola*")
-	   (kbd "C-u")(read-only-mode 0)
-	   (insert result)
-	   (kbd "C-u")(read-only-mode 1))))))
+	   (let ((inhibit-read-only t))
+	     (insert result)))))))
 
 ;;;###autoload
 (defun nikola-webserver-start ()
