@@ -337,7 +337,7 @@ e? " nikola-new-post-extension))
 	    (setq output (concat output (shell-command-to-string
 					 nikola-build-after-hook-script))))
 	(run-hook-with-args 'nikola-build-after-hook "")
-      output))
+	output))
    (lambda (result)
      (if (cl-search "This command needs to run inside an existing Nikola site."
 		 result)

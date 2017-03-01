@@ -65,7 +65,11 @@ Also, emacs-async is necessary. you can install it from elpa with `M-x package-i
 
 ### Install
 
+You can installl from Melpa for a stable release or from the git repository, which may be experimental.
+
     git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
+
+[![img](http://melpa.org/packages/nikola-badge.svg)](http://melpa.org/#/nikola)
 
 
 <a id="orgcbae840"></a>
@@ -240,7 +244,11 @@ Además, `emacs-async` es necesario. Puede instalarse desde elpa con `M-x paquet
 
 ### Instalar
 
+Se puede instalar desde Melpa para tener una versión estable o desde el repositorio git, que puede ser inestable.
+
     git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
+
+[![img](http://melpa.org/packages/nikola-badge.svg)](http://melpa.org/#/nikola)
 
 
 <a id="org286c2aa"></a>

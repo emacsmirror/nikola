@@ -12,9 +12,14 @@ sudo pip3 install Nikola Nikola[extras]
 #+END_SRC
 Also, emacs-async is necessary. you can install it from elpa with =M-x package-install RET async RET=.
 *** Install
+You can installl from Melpa for a stable release or from the git repository, which may be experimental.
+
 #+BEGIN_SRC bash
 git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
 #+END_SRC
+
+[[http://melpa.org/#/nikola][file:http://melpa.org/packages/nikola-badge.svg]]
+
 *** Configuration
 A minimal configuration would be this.
 
@@ -158,9 +163,14 @@ sudo pip install Nikola Nikola[extras]
 
 Además, =emacs-async= es necesario. Puede instalarse desde elpa con =M-x paquete-instalar RET async RET=.
 *** Instalar
+Se puede instalar desde Melpa para tener una versión estable o desde el repositorio git, que puede ser inestable.
+
 #+BEGIN_SRC bash
 git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
 #+END_SRC
+
+[[http://melpa.org/#/nikola][file:http://melpa.org/packages/nikola-badge.svg]]
+
 *** Configuración
 Una configuración minimalista sería la siguiente.
 
