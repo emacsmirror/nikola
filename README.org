@@ -15,7 +15,7 @@ Also, emacs-async is necessary. you can install it from elpa with =M-x package-i
 You can installl from Melpa for a stable release or from the git repository, which may be experimental.
 
 #+BEGIN_SRC bash
-git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
+git clone https://git.daemons.it/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
 #+END_SRC
 
 [[http://melpa.org/#/nikola][file:http://melpa.org/packages/nikola-badge.svg]]
@@ -148,7 +148,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #+END_SRC
 *** Bugs, patches and feature requests
-If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [[https://git.daemons.cfr/drymer/nikola.el/][https://git.daemons.cfr/drymer/nikola.el/]]
+If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [[https://git.daemons.it/drymer/nikola.el/][https://git.daemons.it/drymer/nikola.el/]]
 ** Castellano
 *** Acerca de
 Nikola es un generador de páginas web estáticas. Si no sabes que es, probablemente deberías aprender sobre ello en [[https://getnikola.com][su página web]] y luego volver aquí. Este paquete es un frontend simple alrededor de nikola. En este momento, permite crear un sitio web, crear articulos y páginas, construirlo, desplegarlo, iniciar/detener el servidor web y ejecutar ganchos (hooks).
@@ -166,7 +166,7 @@ Además, =emacs-async= es necesario. Puede instalarse desde elpa con =M-x paquet
 Se puede instalar desde Melpa para tener una versión estable o desde el repositorio git, que puede ser inestable.
 
 #+BEGIN_SRC bash
-git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
+git clone https://git.daemons.it/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
 #+END_SRC
 
 [[http://melpa.org/#/nikola][file:http://melpa.org/packages/nikola-badge.svg]]
@@ -292,4 +292,4 @@ Debería haber recibido una copia de la GNU General Public License
 junto con este programa. Si no es así, consulte <http://www.gnu.org/licenses/>.
 #+END_SRC
 *** Bugs, parches y solicitudes de características
-Si encuentras un error, tienes un parche o tienes la solicitud de una característica, puedes enviar un correo electrónico a la dirección de la sección anterior o ir a [[https://git.daemons.cfr/drymer/nikola.el][https://git.daemons.cfr/drymer/nikola.el]].
+Si encuentras un error, tienes un parche o tienes la solicitud de una característica, puedes enviar un correo electrónico a la dirección de la sección anterior o ir a [[https://git.daemons.it/drymer/nikola.el][https://git.daemons.it/drymer/nikola.el]].

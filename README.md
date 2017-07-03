@@ -67,7 +67,7 @@ Also, emacs-async is necessary. you can install it from elpa with `M-x package-i
 
 You can installl from Melpa for a stable release or from the git repository, which may be experimental.
 
-    git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
+    git clone https://git.daemons.it/drymer/nikola.el ~/.emacs.d/lisp/nikola.el
 
 [![img](http://melpa.org/packages/nikola-badge.svg)](http://melpa.org/#/nikola)
 
@@ -212,7 +212,7 @@ For a more advanced configuration check the next chapter.
 
 ### Bugs, patches and feature requests
 
-If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [<https://git.daemons.cfr/drymer/nikola.el/>](https://git.daemons.cfr/drymer/nikola.el/)
+If you find a bug, have a patch or have a feature request, you may send an e-mail to the address in the previous section or go to [<https://git.daemons.it/drymer/nikola.el/>](https://git.daemons.it/drymer/nikola.el/)
 
 
 <a id="org145399f"></a>
@@ -246,7 +246,7 @@ Además, `emacs-async` es necesario. Puede instalarse desde elpa con `M-x paquet
 
 Se puede instalar desde Melpa para tener una versión estable o desde el repositorio git, que puede ser inestable.
 
-    git clone https://git.daemons.cf/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
+    git clone https://git.daemons.it/drymer/nikola.el ~/.emacs.d/lisp/nikola.el/
 
 [![img](http://melpa.org/packages/nikola-badge.svg)](http://melpa.org/#/nikola)
 
@@ -381,4 +381,4 @@ Para una configuración más avanzada hay que consultar la sección siguiente.
 
 ### Bugs, parches y solicitudes de características
 
-Si encuentras un error, tienes un parche o tienes la solicitud de una característica, puedes enviar un correo electrónico a la dirección de la sección anterior o ir a [<https://git.daemons.cfr/drymer/nikola.el>](https://git.daemons.cfr/drymer/nikola.el).
+Si encuentras un error, tienes un parche o tienes la solicitud de una característica, puedes enviar un correo electrónico a la dirección de la sección anterior o ir a [<https://git.daemons.itr/drymer/nikola.el>](https://git.daemons.itr/drymer/nikola.el).
